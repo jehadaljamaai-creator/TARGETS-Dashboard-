@@ -1830,14 +1830,14 @@ function getSession() {
 function initAuth() {
   let users = getUsers();
   // Force reset if old default accounts exist (migration)
-  if (users.find(u => u.username === 'admin' || u.username === 'manager')) {
+  if (users.find(u => u.username === 'admin' || u.username === 'manager' || u.username === 'Jehadaljamaai@gmail.com')) {
     users = [];
     saveUsers(users);
   }
   // Seed default admin if no users exist
   if (users.length === 0) {
     users = [
-      { username: 'Jehadaljamaai@gmail.com', passHash: hashPass('Jamx@1996'), role: 'admin', name: 'جهاد الجماعي' }
+      { username: 'jehadaljamaai@gmail.com', passHash: hashPass('Jamx@1996'), role: 'admin', name: 'جهاد الجماعي' }
     ];
     saveUsers(users);
   }
@@ -1909,7 +1909,7 @@ function doLogin() {
   } else {
     // Fallback: localStorage auth (offline mode)
     const users = getUsers();
-    const user  = users.find(u => u.username === email && u.passHash === hashPass(pass));
+    const user  = users.find(u => u.username.toLowerCase() === email.toLowerCase() && u.passHash === hashPass(pass));
     if (!user) {
       showErr('loginErr', '❌ البريد الإلكتروني أو كلمة المرور غير صحيحة');
       document.getElementById('loginPass').value = '';
