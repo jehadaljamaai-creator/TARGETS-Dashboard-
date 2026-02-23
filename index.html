@@ -1,0 +1,2253 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>داشبورد المستهدفات</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#0a0e1a; --surface:#111827; --s2:#1a2235; --border:#1e2d47;
+  --accent:#00d4aa; --blue:#3b82f6; --gold:#f59e0b;
+  --red:#ef4444; --green:#22c55e; --text:#e2e8f0; --muted:#64748b;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:'Cairo',sans-serif;min-height:100vh;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(0,212,170,.03)1px,transparent 1px),linear-gradient(90deg,rgba(0,212,170,.03)1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:0;}
+.wrap{position:relative;z-index:1;}
+header{background:linear-gradient(135deg,#0d1b2e,#111827);border-bottom:1px solid var(--border);padding:16px 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;backdrop-filter:blur(10px);}
+.logo{display:flex;align-items:center;gap:12px;}
+.logo-icon{width:42px;height:42px;background:linear-gradient(135deg,var(--accent),var(--blue));border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;}
+.logo h1{font-size:18px;font-weight:700;}
+.logo p{font-size:12px;color:var(--muted);}
+.hc{display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
+select,.btn{background:var(--s2);border:1px solid var(--border);color:var(--text);padding:8px 14px;border-radius:10px;font-family:'Cairo',sans-serif;font-size:13px;cursor:pointer;transition:all .2s;}
+select:hover,.btn:hover{border-color:var(--accent);background:rgba(0,212,170,.08);}
+.btn-p{background:linear-gradient(135deg,var(--accent),#00b890);border:none;color:#0a0e1a;font-weight:700;}
+.btn-p:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(0,212,170,.3);}
+.tabs{display:flex;padding:0 28px;border-bottom:1px solid var(--border);background:var(--surface);overflow-x:auto;}
+.tab{padding:14px 20px;cursor:pointer;font-size:13px;font-weight:600;color:var(--muted);border-bottom:3px solid transparent;transition:all .2s;white-space:nowrap;}
+.tab.active{color:var(--accent);border-bottom-color:var(--accent);}
+.tab:hover:not(.active){color:var(--text);}
+main{padding:22px 28px;}
+.tc{display:none;}.tc.active{display:block;}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:22px;}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:22px;}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;}
+.g5{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:20px;}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px;}
+.kpi{position:relative;overflow:hidden;transition:transform .2s,box-shadow .2s;}
+.kpi:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(0,0,0,.3);}
+.kpi::before{content:'';position:absolute;top:0;right:0;width:65px;height:65px;border-radius:0 14px 0 65px;opacity:.12;}
+.kpi.cg::before{background:var(--green);}
+.kpi.cb::before{background:var(--blue);}
+.kpi.cy::before{background:var(--gold);}
+.kpi.cr::before{background:var(--red);}
+.kpi.ca::before{background:var(--accent);}
+.ki{font-size:24px;margin-bottom:10px;}
+.kl{font-size:12px;color:var(--muted);margin-bottom:4px;}
+.kv{font-size:24px;font-weight:900;line-height:1;margin-bottom:6px;}
+.kv.cg{color:var(--green);}.kv.cb{color:var(--blue);}.kv.cy{color:var(--gold);}.kv.cr{color:var(--red);}.kv.ca{color:var(--accent);}
+.ks{font-size:12px;color:var(--muted);}
+.sh{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+.sht{font-size:15px;font-weight:700;display:flex;align-items:center;gap:8px;}
+.sht::before{content:'';width:4px;height:18px;background:var(--accent);border-radius:2px;}
+.tw{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:22px;}
+.tw.sc{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;}
+thead th{background:var(--s2);padding:11px 14px;font-size:12px;font-weight:600;color:var(--muted);text-align:right;border-bottom:1px solid var(--border);white-space:nowrap;}
+tbody tr{border-bottom:1px solid rgba(30,45,71,.5);transition:background .15s;}
+tbody tr:last-child{border-bottom:none;}
+tbody tr:hover{background:rgba(0,212,170,.04);}
+tbody td{padding:11px 14px;font-size:13px;vertical-align:middle;}
+.bn{font-weight:700;display:flex;align-items:center;gap:8px;}
+.bnum{width:25px;height:25px;background:var(--s2);border:1px solid var(--border);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--accent);font-weight:700;flex-shrink:0;}
+.pr{display:flex;align-items:center;gap:8px;}
+.pb{flex:1;height:7px;background:var(--s2);border-radius:99px;overflow:hidden;min-width:55px;}
+.pf{height:100%;border-radius:99px;}
+.pl{font-size:12px;font-weight:700;min-width:36px;}
+.badge{padding:3px 9px;border-radius:6px;font-size:11px;font-weight:700;}
+.bs{background:rgba(34,197,94,.15);color:var(--green);}.bw{background:rgba(245,158,11,.15);color:var(--gold);}.bd{background:rgba(239,68,68,.15);color:var(--red);}.bm{background:rgba(100,116,139,.15);color:var(--muted);}
+.abtn{background:transparent;border:1px solid var(--border);color:var(--muted);padding:5px 9px;border-radius:7px;cursor:pointer;font-family:'Cairo',sans-serif;font-size:11px;transition:all .2s;}
+.abtn:hover{border-color:var(--accent);color:var(--accent);}
+.cc{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px;margin-bottom:18px;}
+.cct{font-size:13px;font-weight:700;margin-bottom:14px;}
+.mpills{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px;}
+.mpill{padding:5px 11px;border-radius:7px;border:1px solid var(--border);background:var(--s2);color:var(--muted);cursor:pointer;font-family:'Cairo',sans-serif;font-size:12px;transition:all .2s;}
+.mpill.active{background:rgba(0,212,170,.15);border-color:var(--accent);color:var(--accent);font-weight:700;}
+.ann-c{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;}
+.ann-c h4{font-size:12px;color:var(--muted);margin-bottom:7px;}
+.ann-big{font-size:20px;font-weight:900;color:var(--accent);margin-bottom:3px;}
+.ann-sub{font-size:11px;color:var(--muted);}
+.gc{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px;text-align:center;}
+.gl{font-size:11px;color:var(--muted);margin-bottom:8px;font-weight:600;}
+.gv{font-size:22px;font-weight:900;margin-top:5px;}
+.gsb{font-size:11px;color:var(--muted);margin-top:2px;}
+.ec{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px;cursor:pointer;transition:all .2s;position:relative;overflow:hidden;}
+.ec:hover{transform:translateY(-3px);box-shadow:0 10px 26px rgba(0,0,0,.35);border-color:var(--accent);}
+.ec.tg{border-top:3px solid var(--green);}.ec.ty{border-top:3px solid var(--gold);}.ec.tr{border-top:3px solid var(--red);}
+.ecn{position:absolute;top:9px;left:9px;width:21px;height:21px;background:var(--s2);border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--muted);}
+.ecname{font-size:13px;font-weight:700;margin-bottom:10px;padding-top:2px;}
+.ecrow{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;}
+.ecl{font-size:10px;color:var(--muted);}
+.ecv{font-size:12px;font-weight:700;}
+.ecbar{height:4px;background:var(--s2);border-radius:99px;overflow:hidden;margin-bottom:5px;}
+.ecfill{height:100%;border-radius:99px;}
+.ecpct{text-align:center;font-size:17px;font-weight:900;margin-top:6px;}
+.bd-hero{background:linear-gradient(135deg,rgba(0,212,170,.08),rgba(59,130,246,.05));border:1px solid var(--border);border-radius:16px;padding:22px;margin-bottom:22px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;}
+.bd-name{font-size:26px;font-weight:900;color:var(--accent);}
+.bd-sub{font-size:13px;color:var(--muted);margin-top:3px;}
+.bd-stats{display:flex;gap:24px;flex-wrap:wrap;}
+.bd-stat{text-align:center;}
+.bd-sv{font-size:20px;font-weight:900;}
+.bd-sl{font-size:11px;color:var(--muted);margin-top:2px;}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:200;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .25s;backdrop-filter:blur(4px);}
+.modal-overlay.open{opacity:1;pointer-events:all;}
+.modal{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:26px;width:500px;max-width:95vw;max-height:90vh;overflow-y:auto;transform:translateY(20px);transition:transform .25s;}
+.modal-overlay.open .modal{transform:translateY(0);}
+.mt{font-size:17px;font-weight:700;margin-bottom:18px;}
+.fg{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:18px;}
+.fg .fg1{display:flex;flex-direction:column;gap:4px;}
+.fgf{grid-column:1/-1;}
+label{font-size:12px;color:var(--muted);font-weight:600;}
+input[type=number]{background:var(--s2);border:1px solid var(--border);color:var(--text);padding:8px 11px;border-radius:9px;font-family:'Cairo',sans-serif;font-size:13px;width:100%;transition:border-color .2s;}
+input:focus{outline:none;border-color:var(--accent);}
+.mf{display:flex;gap:10px;justify-content:flex-end;}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--green);color:#fff;padding:10px 20px;border-radius:10px;font-weight:700;z-index:999;transition:transform .3s;}
+.toast.show{transform:translateX(-50%) translateY(0);}
+.perf-row{display:flex;gap:16px;margin-top:16px;}
+.perf-side{flex:1;min-width:0;}
+::-webkit-scrollbar{width:5px;height:5px;}
+::-webkit-scrollbar-track{background:var(--bg);}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
+@media(max-width:1200px){.g4{grid-template-columns:repeat(2,1fr);}.g5{grid-template-columns:repeat(3,1fr);}.perf-row{flex-direction:column;}}
+@media(max-width:900px){.g2{grid-template-columns:1fr;}}
+@media(max-width:768px){main{padding:14px;}.g4,.g3{grid-template-columns:1fr 1fr;}.g5{grid-template-columns:1fr 1fr;}.tabs{padding:0 12px;}header{padding:12px 14px;}.hc{gap:6px;}}
+
+  /* ===== AUTH SYSTEM ===== */
+  #authOverlay {
+    position: fixed;
+    inset: 0;
+    background: #070b14;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Cairo', sans-serif;
+    overflow: hidden;
+  }
+
+  /* animated background grid */
+  #authOverlay::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,212,170,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,212,170,0.04) 1px, transparent 1px);
+    background-size: 50px 50px;
+    animation: gridScroll 20s linear infinite;
+    pointer-events: none;
+  }
+  @keyframes gridScroll {
+    0%   { background-position: 0 0; }
+    100% { background-position: 50px 50px; }
+  }
+
+  /* floating orbs */
+  .auth-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    animation: orbFloat 8s ease-in-out infinite;
+    pointer-events: none;
+  }
+  .auth-orb-1 { width:400px;height:400px;background:rgba(0,212,170,0.08);top:-100px;right:-100px;animation-delay:0s; }
+  .auth-orb-2 { width:300px;height:300px;background:rgba(59,130,246,0.07);bottom:-80px;left:-80px;animation-delay:3s; }
+  .auth-orb-3 { width:200px;height:200px;background:rgba(245,158,11,0.05);top:50%;left:20%;animation-delay:5s; }
+  @keyframes orbFloat {
+    0%,100% { transform: translateY(0) scale(1); }
+    50%      { transform: translateY(-30px) scale(1.05); }
+  }
+
+  .auth-box {
+    position: relative;
+    background: rgba(17,24,39,0.9);
+    border: 1px solid rgba(0,212,170,0.2);
+    border-radius: 24px;
+    padding: 48px 44px;
+    width: 420px;
+    max-width: 95vw;
+    backdrop-filter: blur(20px);
+    box-shadow: 0 40px 80px rgba(0,0,0,0.5), 0 0 0 1px rgba(0,212,170,0.05);
+    animation: authSlideIn 0.5s cubic-bezier(0.16,1,0.3,1) forwards;
+  }
+  @keyframes authSlideIn {
+    from { opacity:0; transform: translateY(30px) scale(0.97); }
+    to   { opacity:1; transform: translateY(0) scale(1); }
+  }
+
+  .auth-logo {
+    text-align: center;
+    margin-bottom: 36px;
+  }
+  .auth-logo-icon {
+    width: 64px; height: 64px;
+    background: linear-gradient(135deg, #00d4aa, #3b82f6);
+    border-radius: 18px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    margin-bottom: 16px;
+    box-shadow: 0 8px 30px rgba(0,212,170,0.25);
+  }
+  .auth-logo h2 {
+    font-size: 22px;
+    font-weight: 800;
+    color: #e2e8f0;
+    margin-bottom: 4px;
+  }
+  .auth-logo p {
+    font-size: 13px;
+    color: #64748b;
+  }
+
+  .auth-tab-row {
+    display: flex;
+    background: rgba(26,34,53,0.8);
+    border-radius: 12px;
+    padding: 4px;
+    margin-bottom: 28px;
+    gap: 4px;
+  }
+  .auth-tab-btn {
+    flex: 1;
+    padding: 9px;
+    text-align: center;
+    border-radius: 9px;
+    font-family: 'Cairo', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    color: #64748b;
+    transition: all 0.2s;
+  }
+  .auth-tab-btn.active {
+    background: linear-gradient(135deg, rgba(0,212,170,0.2), rgba(59,130,246,0.15));
+    color: #00d4aa;
+    border: 1px solid rgba(0,212,170,0.25);
+  }
+
+  .auth-form { display: none; }
+  .auth-form.active { display: block; }
+
+  .auth-field {
+    margin-bottom: 16px;
+  }
+  .auth-field label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: #64748b;
+    margin-bottom: 7px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .auth-input-wrap {
+    position: relative;
+  }
+  .auth-input {
+    width: 100%;
+    background: rgba(26,34,53,0.8);
+    border: 1px solid rgba(30,45,71,0.8);
+    color: #e2e8f0;
+    padding: 12px 44px 12px 16px;
+    border-radius: 12px;
+    font-family: 'Cairo', sans-serif;
+    font-size: 14px;
+    box-sizing: border-box;
+    transition: all 0.2s;
+    outline: none;
+  }
+  .auth-input:focus {
+    border-color: #00d4aa;
+    background: rgba(0,212,170,0.04);
+    box-shadow: 0 0 0 3px rgba(0,212,170,0.1);
+  }
+  .auth-input-icon {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #64748b;
+    font-size: 16px;
+    pointer-events: none;
+  }
+  .auth-toggle-pass {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #64748b;
+    cursor: pointer;
+    font-size: 14px;
+    background: none;
+    border: none;
+    padding: 0;
+    font-family: 'Cairo', sans-serif;
+  }
+
+  .auth-btn {
+    width: 100%;
+    background: linear-gradient(135deg, #00d4aa, #00b890);
+    border: none;
+    color: #070b14;
+    padding: 14px;
+    border-radius: 12px;
+    font-family: 'Cairo', sans-serif;
+    font-size: 15px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 8px;
+    letter-spacing: 0.3px;
+  }
+  .auth-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(0,212,170,0.35);
+  }
+  .auth-btn:active { transform: translateY(0); }
+
+  .auth-btn-sec {
+    width: 100%;
+    background: transparent;
+    border: 1px solid rgba(0,212,170,0.3);
+    color: #00d4aa;
+    padding: 13px;
+    border-radius: 12px;
+    font-family: 'Cairo', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 8px;
+  }
+  .auth-btn-sec:hover { background: rgba(0,212,170,0.08); }
+
+  .auth-error {
+    background: rgba(239,68,68,0.12);
+    border: 1px solid rgba(239,68,68,0.3);
+    color: #fca5a5;
+    padding: 10px 14px;
+    border-radius: 10px;
+    font-size: 13px;
+    margin-bottom: 14px;
+    display: none;
+    animation: shake 0.3s ease;
+  }
+  @keyframes shake {
+    0%,100% { transform: translateX(0); }
+    25%      { transform: translateX(-6px); }
+    75%      { transform: translateX(6px); }
+  }
+
+  .auth-success {
+    background: rgba(34,197,94,0.12);
+    border: 1px solid rgba(34,197,94,0.3);
+    color: #86efac;
+    padding: 10px 14px;
+    border-radius: 10px;
+    font-size: 13px;
+    margin-bottom: 14px;
+    display: none;
+  }
+
+  .auth-users-list {
+    margin-top: 16px;
+    border-top: 1px solid rgba(30,45,71,0.8);
+    padding-top: 16px;
+  }
+  .auth-user-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 12px;
+    background: rgba(26,34,53,0.5);
+    border-radius: 10px;
+    margin-bottom: 8px;
+    border: 1px solid rgba(30,45,71,0.5);
+  }
+  .auth-user-info { display:flex; align-items:center; gap:10px; }
+  .auth-user-avatar {
+    width: 34px; height: 34px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, rgba(0,212,170,0.3), rgba(59,130,246,0.3));
+    display: flex; align-items:center; justify-content:center;
+    font-size: 14px; font-weight: 800; color: #00d4aa;
+  }
+  .auth-user-name { font-size: 13px; font-weight: 700; color: #e2e8f0; }
+  .auth-user-role { font-size: 11px; color: #64748b; }
+  .auth-del-btn {
+    background: rgba(239,68,68,0.15);
+    border: 1px solid rgba(239,68,68,0.3);
+    color: #fca5a5;
+    padding: 4px 10px;
+    border-radius: 7px;
+    cursor: pointer;
+    font-size: 12px;
+    font-family: 'Cairo', sans-serif;
+    transition: all 0.2s;
+  }
+  .auth-del-btn:hover { background: rgba(239,68,68,0.3); }
+
+  /* Logged-in user bar */
+  .user-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(26,34,53,0.8);
+    border: 1px solid rgba(30,45,71,0.8);
+    border-radius: 12px;
+    padding: 6px 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .user-bar:hover { border-color: rgba(239,68,68,0.4); }
+  .user-bar-avatar {
+    width: 30px; height: 30px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #00d4aa, #3b82f6);
+    display: flex; align-items:center; justify-content:center;
+    font-size: 13px; font-weight: 800; color: #070b14;
+  }
+  .user-bar-name { font-size: 13px; font-weight: 700; color: #e2e8f0; }
+  .user-bar-logout { font-size: 11px; color: #ef4444; }
+
+  #authOverlay.hidden { display: none; }
+
+
+  .refresh-pill {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    padding: 9px 6px;
+    border-radius: 10px;
+    font-family: 'Cairo', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+  }
+  .refresh-pill:hover  { border-color: var(--accent); color: var(--accent); }
+  .refresh-pill.active { background: rgba(0,212,170,0.15); border-color: var(--accent); color: var(--accent); }
+
+</style>
+</head>
+<body>
+
+<div id="authOverlay">
+  <div class="auth-orb auth-orb-1"></div>
+  <div class="auth-orb auth-orb-2"></div>
+  <div class="auth-orb auth-orb-3"></div>
+
+  <div class="auth-box">
+    <div class="auth-logo">
+      <div class="auth-logo-icon">📊</div>
+      <h2>داشبورد المستهدفات</h2>
+      <p>منصة إدارة ومتابعة أداء الفروع</p>
+    </div>
+
+    <div class="auth-tab-row">
+      <button class="auth-tab-btn active" onclick="authTab('login')">🔐 تسجيل الدخول</button>
+      <button class="auth-tab-btn" id="adminTabBtn" onclick="authTab('admin')" style="display:none;">⚙ إدارة</button>
+    </div>
+
+    <!-- LOGIN FORM -->
+    <div class="auth-form active" id="formLogin">
+      <div class="auth-error" id="loginErr"></div>
+      <div class="auth-field">
+        <label>البريد الإلكتروني</label>
+        <div class="auth-input-wrap">
+          <input class="auth-input" id="loginUser" type="text" placeholder="أدخل البريد الإلكتروني" autocomplete="username" style="padding-left:16px;">
+        </div>
+      </div>
+      <div class="auth-field">
+        <label>كلمة المرور</label>
+        <div class="auth-input-wrap">
+          <input class="auth-input" id="loginPass" type="password" placeholder="أدخل كلمة المرور" autocomplete="current-password" style="padding-left:44px;" onkeydown="if(event.key==='Enter')doLogin()">
+          <button class="auth-toggle-pass" onclick="togglePass('loginPass',this)" type="button">👁</button>
+        </div>
+      </div>
+      <button class="auth-btn" onclick="doLogin()">دخول →</button>
+    </div>
+
+    <!-- ADMIN FORM -->
+    <div class="auth-form" id="formAdmin">
+      <div class="auth-error" id="adminErr"></div>
+      <div class="auth-success" id="adminOk"></div>
+      <p style="font-size:12px;color:#64748b;margin-bottom:14px;">إضافة مستخدم جديد أو حذف مستخدم موجود</p>
+      <div class="auth-field">
+        <label>الاسم الكامل</label>
+        <div class="auth-input-wrap">
+          <input class="auth-input" id="newName" type="text" placeholder="الاسم الكامل (مثال: أحمد محمد)" style="padding-left:16px;">
+        </div>
+      </div>
+      <div class="auth-field">
+        <label>البريد الإلكتروني</label>
+        <div class="auth-input-wrap">
+          <input class="auth-input" id="newUser" type="email" placeholder="example@company.com" style="padding-left:16px;">
+        </div>
+      </div>
+      <div class="auth-field">
+        <label>كلمة المرور</label>
+        <div class="auth-input-wrap">
+          <input class="auth-input" id="newPass" type="password" placeholder="كلمة المرور" style="padding-left:44px;">
+          <button class="auth-toggle-pass" onclick="togglePass('newPass',this)" type="button">👁</button>
+        </div>
+      </div>
+      <div class="auth-field">
+        <label>الصلاحية</label>
+        <select id="newRole" style="width:100%;background:rgba(26,34,53,0.8);border:1px solid rgba(30,45,71,0.8);color:#e2e8f0;padding:12px 16px;border-radius:12px;font-family:'Cairo',sans-serif;font-size:14px;box-sizing:border-box;">
+          <option value="viewer">مشاهد</option>
+          <option value="editor">محرر</option>
+          <option value="admin">مسؤول</option>
+        </select>
+      </div>
+      <button class="auth-btn" onclick="addUser()">+ إضافة مستخدم</button>
+      <div class="auth-users-list" id="usersList"></div>
+      <button class="auth-btn-sec" style="margin-top:12px;" onclick="authLogout()">← تسجيل الخروج</button>
+    </div>
+  </div>
+</div>
+
+
+<div class="wrap">
+
+<header>
+  <div class="logo">
+    <div class="logo-icon">📊</div>
+    <div><h1>داشبورد المستهدفات</h1><p>إدارة ومتابعة أداء 13 فرع</p></div>
+  </div>
+  <div class="hc">
+    <select id="yearSel" onchange="refresh()">
+      <option value="2025">2025</option><option value="2026" selected>2026</option>
+    </select>
+    <select id="monthSel" onchange="refresh()">
+      <option value="1">يناير</option><option value="2">فبراير</option><option value="3">مارس</option>
+      <option value="4" selected>أبريل</option><option value="5">مايو</option><option value="6">يونيو</option>
+      <option value="7">يوليو</option><option value="8">أغسطس</option><option value="9">سبتمبر</option>
+      <option value="10">أكتوبر</option><option value="11">نوفمبر</option><option value="12">ديسمبر</option>
+    </select>
+    <button class="btn btn-p" onclick="openSetTargetsModal()">⚙ المستهدفات</button>
+    <button class="btn" onclick="openScheduleModal()" style="position:relative;" id="scheduleBtn">
+      🔄 التحديث الدوري
+      <span id="scheduleDot" style="display:none;position:absolute;top:4px;right:4px;width:8px;height:8px;background:#f59e0b;border-radius:50%;"></span>
+    </button>
+    <button class="btn btn-primary" onclick="openUploadModal()">📂 رفع ملف الأداء الأسبوعي</button>
+  </div>
+</header>
+
+<!-- Firebase Setup Banner -->
+<div id="firebaseSetupBanner" style="background:linear-gradient(135deg,rgba(245,158,11,0.15),rgba(245,158,11,0.05));border:1px solid rgba(245,158,11,0.4);border-radius:12px;padding:14px 20px;margin:16px 32px 0;display:flex;align-items:center;gap:14px;position:relative;z-index:10;">
+  <div style="font-size:22px;">🔥</div>
+  <div style="flex:1;">
+    <div style="font-size:14px;font-weight:700;color:#f59e0b;margin-bottom:3px;">Firebase غير متصل — الوضع المحلي فقط</div>
+    <div style="font-size:12px;color:#94a3b8;">لمزامنة البيانات على جميع الأجهزة، يرجى إضافة إعدادات Firebase في الكود (<code style="background:rgba(0,0,0,0.3);padding:1px 6px;border-radius:4px;">firebaseConfig</code>)</div>
+  </div>
+  <a href="https://console.firebase.google.com" target="_blank" style="background:rgba(245,158,11,0.2);border:1px solid rgba(245,158,11,0.4);color:#f59e0b;padding:7px 14px;border-radius:8px;font-family:'Cairo',sans-serif;font-size:12px;font-weight:700;text-decoration:none;white-space:nowrap;">فتح Firebase Console ↗</a>
+  <button onclick="document.getElementById('firebaseSetupBanner').style.display='none'" style="background:transparent;border:none;color:#64748b;cursor:pointer;font-size:18px;padding:0 4px;">✕</button>
+</div>
+
+<div class="tabs">
+  <div class="tab active" onclick="showTab('executive')">⭐ اللوحة التنفيذية</div>
+  <div class="tab" onclick="showTab('branch-detail')">🔍 تفصيل الفرع</div>
+  <div class="tab" onclick="showTab('overview')">🏠 نظرة عامة</div>
+  <div class="tab" onclick="showTab('branches')">🏢 الفروع</div>
+  <div class="tab" onclick="showTab('cumulative')">📈 التراكمي</div>
+  <div class="tab" onclick="showTab('annual')">🎯 السنوي</div>
+</div>
+
+<main>
+
+<!-- EXECUTIVE -->
+<div class="tc active" id="tab-executive">
+  <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:10px;">
+    <div>
+      <div style="font-size:22px;font-weight:900;">لوحة المتابعة التنفيذية</div>
+      <div style="font-size:12px;color:var(--muted);margin-top:3px;" id="execSub"></div>
+    </div>
+    <div style="display:flex;gap:14px;font-size:12px;color:var(--muted);">
+      <span>🟢 محقق ≥100%</span><span>🟡 قريب 80–99%</span><span>🔴 دون الهدف &lt;80%</span>
+    </div>
+  </div>
+  <div class="g5" id="execKpis"></div>
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px;">
+    <div class="gc"><div class="gl">تحقيق الإيراد الشهري</div><canvas id="gRev" width="170" height="105"></canvas><div class="gv" id="gRevV"></div><div class="gsb" id="gRevS"></div></div>
+    <div class="gc"><div class="gl">تحقيق الإشغال الشهري</div><canvas id="gOcc" width="170" height="105"></canvas><div class="gv" id="gOccV"></div><div class="gsb" id="gOccS"></div></div>
+    <div class="gc"><div class="gl">الإيراد التراكمي</div><canvas id="gCR" width="170" height="105"></canvas><div class="gv" id="gCRV"></div><div class="gsb" id="gCRS"></div></div>
+    <div class="gc"><div class="gl">الإشغال التراكمي</div><canvas id="gCO" width="170" height="105"></canvas><div class="gv" id="gCOV"></div><div class="gsb" id="gCOS"></div></div>
+  </div>
+  <div class="sh">
+    <div class="sht">أداء جميع الفروع</div>
+    <span style="font-size:12px;color:var(--muted);">اضغط على أي فرع للاطلاع على التفاصيل الكاملة</span>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(195px,1fr));gap:11px;margin-bottom:22px;" id="execCards"></div>
+  <div class="perf-row">
+    <div class="cc perf-side"><div class="cct">🏆 أفضل 5 فروع – الإيراد الشهري</div><canvas id="topC" height="185"></canvas></div>
+    <div class="cc perf-side"><div class="cct">⚠ أضعف 5 فروع – نسبة التحقيق</div><canvas id="botC" height="185"></canvas></div>
+  </div>
+  <div class="cc"><div class="cct">الإيراد الشهري لجميع الفروع – مستهدف vs محقق</div><canvas id="execTrend" height="145"></canvas></div>
+</div>
+
+<!-- BRANCH DETAIL -->
+<div class="tc" id="tab-branch-detail">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:10px;">
+    <div class="sht">تفصيل الفرع</div>
+    <div style="display:flex;gap:10px;align-items:center;">
+      <select id="bdSel" onchange="renderBranchDetail()" style="font-size:14px;padding:9px 15px;border-radius:10px;min-width:210px;background:var(--s2);border:1px solid var(--border);color:var(--text);font-family:'Cairo',sans-serif;cursor:pointer;"></select>
+      <button class="btn btn-p" onclick="openUploadModal()">+ تحديث الأداء</button>
+    </div>
+  </div>
+  <div class="bd-hero">
+    <div><div class="bd-name" id="bdName"></div><div class="bd-sub" id="bdSub"></div></div>
+    <div class="bd-stats" id="bdStats"></div>
+  </div>
+  <div class="g4" id="bdKpis"></div>
+  <div class="sh"><div class="sht">المستهدف vs المحقق – شهر بشهر</div></div>
+  <div class="tw sc" style="margin-bottom:22px;">
+    <table><thead><tr><th>الشهر</th><th>إيراد مستهدف</th><th>إيراد محقق</th><th>الفجوة</th><th>نسبة الإيراد</th><th>إشغال مستهدف</th><th>إشغال محقق</th><th>نسبة الإشغال</th><th>الحالة</th></tr></thead>
+    <tbody id="bdTbody"></tbody></table>
+  </div>
+  <div class="g2">
+    <div class="cc" style="margin-bottom:0"><div class="cct">الإيراد – مستهدف vs محقق</div><canvas id="bdRevC" height="215"></canvas></div>
+    <div class="cc" style="margin-bottom:0"><div class="cct">الإشغال – مستهدف vs محقق</div><canvas id="bdOccC" height="215"></canvas></div>
+  </div>
+  <div class="cc" style="margin-top:14px;"><div class="cct">الإيراد التراكمي – مستهدف vs محقق</div><canvas id="bdCumC" height="145"></canvas></div>
+
+  <!-- Weekly breakdown -->
+  <div style="display:flex;align-items:center;justify-content:space-between;margin:20px 0 12px;">
+    <div style="font-size:16px;font-weight:700;display:flex;align-items:center;gap:8px;">
+      <span style="width:4px;height:20px;background:var(--accent);border-radius:2px;display:inline-block;"></span>
+      📅 التفصيل الأسبوعي – الشهر المختار
+    </div>
+    <span style="font-size:12px;color:var(--muted)">يتحدث عند رفع ملف Excel</span>
+  </div>
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:16px;">
+    <table style="width:100%;border-collapse:collapse;">
+      <thead>
+        <tr style="background:var(--surface2);">
+          <th style="padding:13px 18px;text-align:right;font-size:13px;color:var(--muted);border-bottom:1px solid var(--border);">الأسبوع</th>
+          <th style="padding:13px 18px;text-align:right;font-size:13px;color:var(--muted);border-bottom:1px solid var(--border);">الإيراد المحقق</th>
+          <th style="padding:13px 18px;text-align:right;font-size:13px;color:var(--muted);border-bottom:1px solid var(--border);">نسبة من الشهر</th>
+          <th style="padding:13px 18px;text-align:right;font-size:13px;color:var(--muted);border-bottom:1px solid var(--border);">نسبة الإشغال</th>
+        </tr>
+      </thead>
+      <tbody id="weeklyBreakdownTbody"></tbody>
+    </table>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px;">
+      <div style="font-size:14px;font-weight:700;margin-bottom:14px;">الإيراد الأسبوعي</div>
+      <canvas id="weeklyRevChart" height="200"></canvas>
+    </div>
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px;">
+      <div style="font-size:14px;font-weight:700;margin-bottom:14px;">الإشغال الأسبوعي %</div>
+      <canvas id="weeklyOccChart" height="200"></canvas>
+    </div>
+  </div>
+</div>
+
+<!-- OVERVIEW -->
+<div class="tc" id="tab-overview">
+  <div class="g4" id="kpiGrid"></div>
+  <div class="g2">
+    <div class="cc" style="margin-bottom:0"><div class="cct">الإيراد – الفروع</div><canvas id="revC" height="215"></canvas></div>
+    <div class="cc" style="margin-bottom:0"><div class="cct">الإشغال – الفروع</div><canvas id="occC" height="215"></canvas></div>
+  </div>
+  <div class="sh" style="margin-top:18px;"><div class="sht">ملخص الفروع – الشهر الحالي</div></div>
+  <div class="tw"><table><thead><tr><th>الفرع</th><th>إيراد مستهدف</th><th>إيراد محقق</th><th>تحقيق الإيراد</th><th>إشغال مستهدف</th><th>إشغال محقق</th><th>تحقيق الإشغال</th><th>الحالة</th><th></th></tr></thead><tbody id="ovTbody"></tbody></table></div>
+</div>
+
+<!-- BRANCHES -->
+<div class="tc" id="tab-branches">
+  <div class="sh"><div class="sht">تفاصيل الفروع الـ 13</div><button class="btn" onclick="openSetTargetsModal()">⚙ تعديل المستهدفات</button></div>
+  <div class="tw"><table><thead><tr><th>#</th><th>الفرع</th><th>إيراد مستهدف</th><th>إيراد محقق</th><th>الفجوة</th><th>إشغال مستهدف%</th><th>إشغال محقق%</th><th>فجوة الإشغال</th><th>التقييم</th><th></th></tr></thead><tbody id="brTbody"></tbody></table></div>
+  <div class="sh"><div class="sht">جدول المستهدفات الشهرية لكل فرع</div></div>
+  <div class="tw sc"><table><thead><tr><th>الفرع</th><th>يناير</th><th>فبراير</th><th>مارس</th><th>أبريل</th><th>مايو</th><th>يونيو</th><th>يوليو</th><th>أغسطس</th><th>سبتمبر</th><th>أكتوبر</th><th>نوفمبر</th><th>ديسمبر</th><th style="color:var(--accent)">المجموع</th></tr></thead><tbody id="mthTbody"></tbody></table></div>
+</div>
+
+<!-- CUMULATIVE -->
+<div class="tc" id="tab-cumulative">
+  <div class="sh"><div class="sht">التراكمي الشهري – من بداية السنة</div></div>
+  <div class="mpills" id="cumPills"></div>
+  <div class="g4" id="cumKpis"></div>
+  <div class="g2">
+    <div class="cc" style="margin-bottom:0"><div class="cct">إيراد تراكمي – مستهدف vs محقق</div><canvas id="cumRC" height="215"></canvas></div>
+    <div class="cc" style="margin-bottom:0"><div class="cct">إشغال تراكمي – مستهدف vs محقق</div><canvas id="cumOC" height="215"></canvas></div>
+  </div>
+  <div class="sh" style="margin-top:18px;"><div class="sht">أداء الفروع – التراكمي</div></div>
+  <div class="tw"><table><thead><tr><th>الفرع</th><th>إيراد تراكمي مستهدف</th><th>إيراد تراكمي محقق</th><th>نسبة التحقيق</th><th>إشغال مستهدف%</th><th>إشغال محقق%</th><th>نسبة الإشغال</th></tr></thead><tbody id="cumBrT"></tbody></table></div>
+</div>
+
+<!-- ANNUAL -->
+<div class="tc" id="tab-annual">
+  <div class="sh"><div class="sht">المستهدف السنوي والتوقعات</div></div>
+  <div class="g3" id="annGrid"></div>
+  <div class="g2">
+    <div class="cc" style="margin-bottom:0"><div class="cct">الإيراد الشهري السنوي – مستهدف vs محقق</div><canvas id="annRC" height="215"></canvas></div>
+    <div class="cc" style="margin-bottom:0"><div class="cct">نسبة التحقيق السنوي – الفروع</div><canvas id="annBC" height="215"></canvas></div>
+  </div>
+</div>
+
+</main>
+</div>
+
+<!-- TARGETS MODAL -->
+<div class="modal-overlay" id="targetsModal">
+  <div class="modal">
+    <div class="mt">⚙ تحديد المستهدفات</div>
+    <div style="margin-bottom:14px;">
+      <label>اختر الفرع</label>
+      <select id="tBrSel" style="width:100%;margin-top:5px;background:var(--s2);border:1px solid var(--border);color:var(--text);padding:8px;border-radius:9px;font-family:'Cairo',sans-serif;"></select>
+    </div>
+    <div class="fg">
+      <div class="fg1"><label>إيراد مستهدف للشهر المحدد (ريال)</label><input type="number" id="tRevM" placeholder="0"></div>
+      <div class="fg1"><label>إيراد مستهدف سنوي (ريال)</label><input type="number" id="tRevY" placeholder="0"></div>
+      <div class="fg1"><label>إشغال مستهدف شهري (%)</label><input type="number" id="tOccM" placeholder="0" min="0" max="100"></div>
+      <div class="fg1"><label>إشغال مستهدف سنوي (%)</label><input type="number" id="tOccY" placeholder="0" min="0" max="100"></div>
+    </div>
+    <div class="mf"><button class="btn" onclick="closeModals()">إلغاء</button><button class="btn btn-p" onclick="saveTargets()">💾 حفظ</button></div>
+  </div>
+</div>
+
+<!-- UPDATE MODAL -->
+<div class="modal-overlay" id="uploadModal">
+  <div class="modal" style="width:680px;">
+    <div class="modal-title">📂 رفع ملف الأداء الأسبوعي</div>
+    <input type="hidden" id="preselBranch" value="">
+    <div id="preselBranchNote" style="display:none;align-items:center;gap:10px;padding:10px 14px;background:rgba(0,212,170,0.08);border:1px solid rgba(0,212,170,0.2);border-radius:10px;margin-bottom:16px;">
+      <span style="font-size:18px;">🏢</span>
+      <span style="font-size:13px;color:var(--muted);">رفع أداء فرع: <strong id="preselBranchName" style="color:var(--accent)"></strong> — سيتم تحديث هذا الفرع تلقائياً</span>
+    </div>
+
+    <!-- Month selector -->
+    <div style="margin-bottom:20px;">
+      <label style="font-size:13px;color:var(--muted);font-weight:600;">اختر الشهر</label>
+      <select id="uploadMonthSel" style="width:100%;margin-top:6px;background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:10px;border-radius:10px;font-family:'Cairo',sans-serif;font-size:14px;">
+        <option value="1">يناير</option><option value="2">فبراير</option><option value="3">مارس</option>
+        <option value="4">أبريل</option><option value="5">مايو</option><option value="6">يونيو</option>
+        <option value="7">يوليو</option><option value="8">أغسطس</option><option value="9">سبتمبر</option>
+        <option value="10">أكتوبر</option><option value="11">نوفمبر</option><option value="12">ديسمبر</option>
+      </select>
+    </div>
+
+    <!-- Upload zone -->
+    <div id="dropZone" onclick="document.getElementById('xlsxFile').click()"
+      style="border:2px dashed var(--border);border-radius:14px;padding:36px 20px;text-align:center;cursor:pointer;transition:all 0.2s;margin-bottom:20px;background:var(--surface2);"
+      ondragover="event.preventDefault();this.style.borderColor='var(--accent)'"
+      ondragleave="this.style.borderColor='var(--border)'"
+      ondrop="handleDrop(event)">
+      <div style="font-size:42px;margin-bottom:12px;">📊</div>
+      <div style="font-size:15px;font-weight:700;margin-bottom:6px;">اسحب ملف Excel هنا أو انقر للاختيار</div>
+      <div style="font-size:12px;color:var(--muted);">يدعم: .xlsx – نموذج الأداء الأسبوعي</div>
+      <input type="file" id="xlsxFile" accept=".xlsx" style="display:none" onchange="handleFileSelect(event)">
+    </div>
+
+    <!-- Preview table -->
+    <div id="uploadPreview" style="display:none;margin-bottom:20px;">
+      <div style="font-size:14px;font-weight:700;color:var(--accent);margin-bottom:10px;">معاينة البيانات المستخرجة:</div>
+      <div style="max-height:260px;overflow-y:auto;border-radius:10px;border:1px solid var(--border);">
+        <table style="width:100%;border-collapse:collapse;font-size:12px;" id="previewTable">
+          <thead>
+            <tr style="background:var(--surface2);">
+              <th style="padding:8px 12px;text-align:right;color:var(--muted);">الفرع</th>
+              <th style="padding:8px 10px;text-align:center;color:var(--accent2);">أسبوع 1 إيراد</th>
+              <th style="padding:8px 10px;text-align:center;color:var(--success);">أسبوع 1 إشغال%</th>
+              <th style="padding:8px 10px;text-align:center;color:var(--accent2);">أسبوع 2 إيراد</th>
+              <th style="padding:8px 10px;text-align:center;color:var(--success);">أسبوع 2 إشغال%</th>
+              <th style="padding:8px 10px;text-align:center;color:var(--accent2);">أسبوع 3 إيراد</th>
+              <th style="padding:8px 10px;text-align:center;color:var(--success);">أسبوع 3 إشغال%</th>
+              <th style="padding:8px 10px;text-align:center;color:var(--accent2);">أسبوع 4 إيراد</th>
+              <th style="padding:8px 10px;text-align:center;color:var(--success);">أسبوع 4 إشغال%</th>
+              <th style="padding:8px 10px;text-align:center;color:var(--accent);font-weight:700;">إجمالي الإيراد</th>
+              <th style="padding:8px 10px;text-align:center;color:var(--accent);font-weight:700;">متوسط الإشغال%</th>
+            </tr>
+          </thead>
+          <tbody id="previewTbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Download template -->
+    <div style="background:var(--surface2);border-radius:10px;padding:14px 16px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;">
+      <div>
+        <div style="font-size:13px;font-weight:700;">تحميل نموذج Excel</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:2px;">نموذج جاهز بجميع الفروع وكل الأسابيع</div>
+      </div>
+      <button class="btn" onclick="downloadTemplate()" style="font-size:12px;">⬇ تحميل النموذج</button>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModals()">إلغاء</button>
+      <button class="btn btn-primary" id="confirmUploadBtn" onclick="confirmUpload()" style="display:none;">✅ تطبيق البيانات</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- Firebase Setup Instructions Modal -->
+<div class="modal-overlay" id="firebaseSetupModal">
+  <div class="modal" style="width:640px;max-height:85vh;overflow-y:auto;">
+    <div class="modal-title">🔥 كيفية ربط Firebase</div>
+    
+    <div style="background:var(--surface2);border-radius:12px;padding:20px;margin-bottom:16px;">
+      <div style="font-size:14px;font-weight:700;color:var(--accent);margin-bottom:12px;">الخطوة 1 — إنشاء مشروع Firebase</div>
+      <ol style="font-size:13px;color:#94a3b8;line-height:2;padding-right:20px;">
+        <li>اذهب إلى <a href="https://console.firebase.google.com" target="_blank" style="color:var(--accent);">console.firebase.google.com</a></li>
+        <li>اضغط <strong style="color:#e2e8f0;">Create a project</strong> → أدخل اسم المشروع</li>
+        <li>من القائمة الجانبية: <strong style="color:#e2e8f0;">Build → Authentication</strong> → Get started → Email/Password → Enable</li>
+        <li>من القائمة الجانبية: <strong style="color:#e2e8f0;">Build → Realtime Database</strong> → Create database → Start in test mode</li>
+      </ol>
+    </div>
+
+    <div style="background:var(--surface2);border-radius:12px;padding:20px;margin-bottom:16px;">
+      <div style="font-size:14px;font-weight:700;color:var(--accent);margin-bottom:12px;">الخطوة 2 — إضافة المستخدم</div>
+      <ol style="font-size:13px;color:#94a3b8;line-height:2;padding-right:20px;">
+        <li>من <strong style="color:#e2e8f0;">Authentication → Users → Add user</strong></li>
+        <li>أدخل: <code style="background:rgba(0,212,170,0.1);color:var(--accent);padding:2px 8px;border-radius:4px;"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="8ec4ebe6efeaefe2e4efe3efefe7cee9e3efe7e2a0ede1e3">[email&#160;protected]</a></code></li>
+        <li>كلمة المرور: <code style="background:rgba(0,212,170,0.1);color:var(--accent);padding:2px 8px;border-radius:4px;">Jamx@1996</code></li>
+      </ol>
+    </div>
+
+    <div style="background:var(--surface2);border-radius:12px;padding:20px;margin-bottom:16px;">
+      <div style="font-size:14px;font-weight:700;color:var(--accent);margin-bottom:12px;">الخطوة 3 — نسخ الإعدادات في الكود</div>
+      <ol style="font-size:13px;color:#94a3b8;line-height:2;padding-right:20px;">
+        <li>Project Settings (⚙) → Your apps → Add app → Web</li>
+        <li>انسخ <code style="background:rgba(0,0,0,0.3);padding:1px 6px;border-radius:4px;">firebaseConfig</code> وضعه في ملف HTML بدلاً من القيم الوهمية</li>
+      </ol>
+      <div style="background:#0a0e1a;border-radius:8px;padding:14px;font-size:12px;color:#64748b;font-family:monospace;direction:ltr;text-align:left;margin-top:10px;">
+        const firebaseConfig = {<br>
+        &nbsp;&nbsp;apiKey: "<span style="color:#f59e0b;">AIzaSy...</span>",<br>
+        &nbsp;&nbsp;authDomain: "<span style="color:#f59e0b;">myproject.firebaseapp.com</span>",<br>
+        &nbsp;&nbsp;databaseURL: "<span style="color:#f59e0b;">https://myproject-rtdb.firebaseio.com</span>",<br>
+        &nbsp;&nbsp;projectId: "<span style="color:#f59e0b;">myproject</span>",<br>
+        &nbsp;&nbsp;...<br>
+        };
+      </div>
+    </div>
+
+    <div style="background:rgba(34,197,94,0.08);border:1px solid rgba(34,197,94,0.2);border-radius:12px;padding:16px;margin-bottom:16px;">
+      <div style="font-size:13px;color:#86efac;font-weight:700;margin-bottom:6px;">✅ بعد الإعداد</div>
+      <div style="font-size:12px;color:#94a3b8;">جميع البيانات (الأداء، المستهدفات) ستُحفظ تلقائياً في السحابة وتتزامن على جميع الأجهزة فور أي تحديث.</div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn btn-primary" onclick="closeModals()">فهمت ✓</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══ SCHEDULE / AUTO-UPDATE MODAL ══ -->
+<div class="modal-overlay" id="scheduleModal">
+  <div class="modal" style="width:560px;">
+    <div class="modal-title">🔄 التحديث الدوري للبيانات</div>
+
+    <!-- Last updated info -->
+    <div style="background:var(--surface2);border-radius:12px;padding:16px 18px;margin-bottom:20px;display:flex;align-items:center;gap:14px;">
+      <div style="font-size:28px;">📅</div>
+      <div>
+        <div style="font-size:13px;color:var(--muted);margin-bottom:3px;">آخر تحديث للبيانات</div>
+        <div style="font-size:15px;font-weight:700;color:var(--text);" id="lastUpdateLabel">لم يتم التحديث بعد</div>
+      </div>
+      <div style="margin-right:auto;">
+        <div id="updateStatusBadge" style="background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.3);color:#fca5a5;padding:5px 12px;border-radius:20px;font-size:12px;font-weight:700;">لم يُحدَّث</div>
+      </div>
+    </div>
+
+    <!-- Auto-refresh interval -->
+    <div style="margin-bottom:20px;">
+      <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:12px;">⚡ التحديث التلقائي للشاشة</div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;" id="refreshGrid">
+        <button class="refresh-pill" data-val="0"   onclick="setRefresh(0)">إيقاف</button>
+        <button class="refresh-pill" data-val="5"   onclick="setRefresh(5)">كل 5 د</button>
+        <button class="refresh-pill" data-val="15"  onclick="setRefresh(15)">كل 15 د</button>
+        <button class="refresh-pill" data-val="30"  onclick="setRefresh(30)">كل 30 د</button>
+      </div>
+      <div style="font-size:12px;color:var(--muted);margin-top:8px;" id="refreshStatus">التحديث التلقائي: <strong>متوقف</strong></div>
+    </div>
+
+    <!-- Weekly reminder -->
+    <div style="margin-bottom:20px;">
+      <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:12px;">🔔 تذكير رفع البيانات الأسبوعية</div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;" id="reminderGrid">
+        <button class="refresh-pill" data-day="off"    onclick="setReminder('off')">إيقاف</button>
+        <button class="refresh-pill active" data-day="0" onclick="setReminder('0')">الأحد</button>
+        <button class="refresh-pill" data-day="1"     onclick="setReminder('1')">الاثنين</button>
+        <button class="refresh-pill" data-day="2"     onclick="setReminder('2')">الثلاثاء</button>
+      </div>
+    </div>
+
+    <!-- Activity log -->
+    <div style="margin-bottom:20px;">
+      <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:10px;">📋 سجل التحديثات</div>
+      <div style="background:var(--surface2);border-radius:10px;max-height:180px;overflow-y:auto;padding:4px 0;" id="updateLog">
+        <div style="padding:12px 16px;font-size:13px;color:var(--muted);text-align:center;">لا يوجد سجل حتى الآن</div>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:4px;">
+      <button class="btn btn-primary" onclick="markUpdatedNow()">✅ تسجيل تحديث الآن</button>
+      <button class="btn" onclick="openUploadModal();closeModals()">📂 رفع ملف بيانات</button>
+    </div>
+
+    <div class="modal-footer" style="margin-top:16px;">
+      <button class="btn" onclick="closeModals()">إغلاق</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- Firebase -->
+<script type="module">
+// ── PASTE YOUR FIREBASE CONFIG HERE ──────────────────────────
+// 1. Go to https://console.firebase.google.com
+// 2. Create project → Add Web App → Copy firebaseConfig object
+// 3. Replace the object below with your own config
+// ─────────────────────────────────────────────────────────────
+import { initializeApp }          from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getDatabase, ref, set, get, onValue, update }
+                                   from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, updatePassword, EmailAuthProvider, reauthenticateWithCredential }
+                                   from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey:            "YOUR_API_KEY",
+  authDomain:        "YOUR_PROJECT.firebaseapp.com",
+  databaseURL:       "https://YOUR_PROJECT-default-rtdb.firebaseio.com",
+  projectId:         "YOUR_PROJECT",
+  storageBucket:     "YOUR_PROJECT.appspot.com",
+  messagingSenderId: "YOUR_SENDER_ID",
+  appId:             "YOUR_APP_ID"
+};
+
+const app  = initializeApp(firebaseConfig);
+const db   = getDatabase(app);
+const auth = getAuth(app);
+
+// ── Expose to global scope so non-module scripts can call them
+window._fb = { db, auth, ref, set, get, onValue, update,
+               signInWithEmailAndPassword, signOut,
+               onAuthStateChanged, updatePassword,
+               EmailAuthProvider, reauthenticateWithCredential };
+
+// ── Auth state listener ─────────────────────────────────────
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    // Fetch user profile from DB
+    get(ref(db, `users/${user.uid}`)).then(snap => {
+      const profile = snap.val() || { name: user.email, role: 'viewer' };
+      window._currentUser = { uid: user.uid, email: user.email, ...profile };
+      loginSuccess(window._currentUser);
+      loadAllDataFromFirebase();
+    });
+  } else {
+    window._currentUser = null;
+    document.getElementById('authOverlay').classList.remove('hidden');
+    document.getElementById('authOverlay').style.display = 'flex';
+    document.getElementById('userBarBtn').style.display = 'none';
+  }
+});
+
+// ── Load perf + targets from Firebase ──────────────────────
+window.loadAllDataFromFirebase = function() {
+  const { ref: r, onValue: ov, db: database } = window._fb;
+
+  // Performance data
+  ov(r(database, 'performance'), (snap) => {
+    const data = snap.val();
+    if (data) {
+      Object.keys(data).forEach(bi => {
+        if (!perf[bi]) perf[bi] = {};
+        Object.keys(data[bi]).forEach(m => {
+          perf[bi][m] = data[bi][m];
+        });
+      });
+      renderAll();
+    }
+  });
+
+  // Targets
+  ov(r(database, 'targets'), (snap) => {
+    const data = snap.val();
+    if (data) {
+      Object.keys(data).forEach(bi => {
+        if (tgts[bi]) {
+          tgts[bi] = { ...tgts[bi], ...data[bi] };
+          if (data[bi].arr) tgts[bi].arr = data[bi].arr;
+        }
+      });
+      renderAll();
+    }
+  });
+};
+
+// ── Save perf month to Firebase ─────────────────────────────
+window.saveToFirebase = function(branchIdx, month, data) {
+  const { ref: r, set: s, db: database } = window._fb;
+  s(r(database, `performance/${branchIdx}/${month}`), data)
+    .then(() => showToast('✅ تم الحفظ في السحابة'))
+    .catch(e => showToast('❌ خطأ في الحفظ: ' + e.message));
+};
+
+// ── Save targets to Firebase ────────────────────────────────
+window.saveTargetsToFirebase = function(branchIdx, data) {
+  const { ref: r, set: s, db: database } = window._fb;
+  s(r(database, `targets/${branchIdx}`), data)
+    .catch(e => console.error('Target save error:', e));
+};
+
+// ── Firebase Login ──────────────────────────────────────────
+window.firebaseLogin = function(email, password) {
+  const { signInWithEmailAndPassword: signIn, auth: a } = window._fb;
+  signIn(a, email, password).catch(err => {
+    let msg = '❌ البريد الإلكتروني أو كلمة المرور غير صحيحة';
+    if (err.code === 'auth/too-many-requests') msg = '⚠ تم تجاوز عدد المحاولات، حاول لاحقاً';
+    document.getElementById('loginErr').textContent = msg;
+    document.getElementById('loginErr').style.display = 'block';
+    document.getElementById('loginPass').value = '';
+  });
+};
+
+// ── Firebase Logout ─────────────────────────────────────────
+window.firebaseLogout = function() {
+  window._fb.signOut(window._fb.auth);
+};
+
+// ── Firebase Reset Password ─────────────────────────────────
+window.firebaseResetPassword = function(email, currentPass, newPass) {
+  const { auth: a, EmailAuthProvider: EP, reauthenticateWithCredential: reauth, updatePassword: updPass } = window._fb;
+  const user = a.currentUser;
+  if (!user) return;
+  const cred = EP.credential(email, currentPass);
+  reauth(user, cred).then(() => {
+    return updPass(user, newPass);
+  }).then(() => {
+    document.getElementById('forgotOk').textContent = '✅ تم تغيير كلمة المرور بنجاح!';
+    document.getElementById('forgotOk').style.display = 'block';
+    setTimeout(() => authTab('login'), 2500);
+  }).catch(err => {
+    let msg = '❌ خطأ في تغيير كلمة المرور';
+    if (err.code === 'auth/wrong-password') msg = '❌ كلمة المرور الحالية غير صحيحة';
+    document.getElementById('forgotErr').textContent = msg;
+    document.getElementById('forgotErr').style.display = 'block';
+  });
+};
+
+console.log('🔥 Firebase initialized — waiting for auth state...');
+</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<script>
+const BR=['الأحساء','الجوف','التمام','الرياض','المجمعة','المدينة المنورة','بريدة','تبوك','جازان','جدة','حائل','خميس مشيط','مكة المكرمة'];
+const MN=['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+const MT={
+  0:[30000,15000,35000,20000,60000,30000,30000,10000,15000,90000,15000,60000],
+  1:[12000,21000,30000,30000,45000,45000,30000,60000,15000,30000,15000,90000],
+  2:[75000,75000,60000,60000,120000,90000,90000,120000,90000,100000,90000,60000],
+  3:[150000,150000,250000,250000,150000,150000,200000,150000,500000,350000,350000,350000],
+  4:[15000,10000,15000,15000,15000,15000,15000,45000,15000,35000,15000,40000],
+  5:[75000,75000,60000,90000,90000,60000,60000,45000,45000,60000,120000,90000],
+  6:[60000,60000,100000,45000,45000,120000,60000,150000,30000,90000,90000,90000],
+  7:[9000,21000,21000,21000,30000,21000,45000,21000,90000,45000,45000,60000],
+  8:[15000,21000,21000,45000,90000,30000,45000,45000,45000,21000,45000,100000],
+  9:[90000,60000,60000,100000,45000,210000,100000,154000,21000,84000,96000,110000],
+  10:[9000,21000,21000,75000,75000,30000,75000,45000,75000,60000,60000,100000],
+  11:[21000,75000,30000,30000,60000,30000,60000,60000,30000,90000,90000,100000],
+  12:[15000,30000,45000,90000,45000,45000,45000,45000,90000,45000,45000,90000]
+};
+let tgts={},perf={};
+const ACTUAL_REV={
+  0:{1:31700,2:24980},
+  1:{1:6505,2:52480},
+  2:{1:75310,2:13960},
+  3:{1:184771,2:56100},
+  4:{1:19425,2:40670},
+  5:{1:84425,2:64650},
+  6:{1:69025,2:40915},
+  7:{1:14700,2:4200},
+  8:{1:0,2:0},
+  9:{1:84435,2:61065},
+  10:{1:8766,2:28035},
+  11:{1:21650,2:68800},
+  12:{1:27250,2:81350}
+};
+function initData(){
+  BR.forEach((_,i)=>{
+    const arr=MT[i],yr=arr.reduce((s,v)=>s+v,0);
+    tgts[i]={arr,monthlyRev:Math.round(yr/12),yearlyRev:yr,monthlyOcc:75,yearlyOcc:75};
+    perf[i]={};
+    for(let m=1;m<=12;m++){
+      perf[i][m]={rev:ACTUAL_REV[i]&&ACTUAL_REV[i][m]?ACTUAL_REV[i][m]:0,occ:0};
+    }
+  });
+}
+initData();
+
+const N=n=>n.toLocaleString('en-US');
+const pct=(a,b)=>b?Math.round(a/b*100):0;
+const gc=p=>p>90?'var(--green)':p>=70?'var(--gold)':'var(--red)';
+const gcl=p=>p>90?'cg':p>=70?'cy':'cr';
+const bdg=p=>p>90?'<span class="badge bs">✅ محقق</span>':p>=70?'<span class="badge bw">⚠ قريب</span>':'<span class="badge bd">❌ دون الهدف</span>';
+const mT2=(i,m)=>tgts[i].arr?tgts[i].arr[m-1]:tgts[i].monthlyRev;
+const mP2=(i,m)=>perf[i][m]||{rev:0,occ:0};
+const prow=(p,c)=>`<div class="pr"><div class="pb"><div class="pf" style="width:${Math.min(p,100)}%;background:${c};"></div></div><span class="pl" style="color:${c}">${p}%</span></div>`;
+const CO={responsive:true,plugins:{legend:{labels:{color:'#94a3b8',font:{family:'Cairo',size:11}}}},scales:{x:{ticks:{color:'#64748b',font:{size:10}},grid:{color:'rgba(255,255,255,0.04)'}},y:{ticks:{color:'#64748b',font:{size:10}},grid:{color:'rgba(255,255,255,0.04)'}}}};
+
+let activeTab='executive',charts={},cumUpTo=4;
+
+function showTab(id){
+  document.querySelectorAll('.tc').forEach(e=>e.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(e=>e.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  const tabs=['executive','branch-detail','overview','branches','cumulative','annual'];
+  const el=document.querySelectorAll('.tab')[tabs.indexOf(id)];
+  if(el)el.classList.add('active');
+  activeTab=id;renderAll();
+}
+function refresh(){cumUpTo=curM();renderAll();}
+function curM(){return parseInt(document.getElementById('monthSel').value);}
+function renderAll(){
+  if(activeTab==='executive')renderExec();
+  if(activeTab==='branch-detail')renderBD();
+  if(activeTab==='overview')renderOV();
+  if(activeTab==='branches')renderBR();
+  if(activeTab==='cumulative')renderCum();
+  if(activeTab==='annual')renderAnn();
+}
+
+function dg(id,p,color){
+  const c=document.getElementById(id);if(!c)return;
+  const ctx=c.getContext('2d'),W=c.width,H=c.height,cx=W/2,cy=H-5,r=Math.min(W,H*2)*0.39;
+  ctx.clearRect(0,0,W,H);
+  ctx.beginPath();ctx.arc(cx,cy,r,Math.PI,2*Math.PI);ctx.strokeStyle='#1a2235';ctx.lineWidth=15;ctx.lineCap='round';ctx.stroke();
+  if(p>0){ctx.beginPath();ctx.arc(cx,cy,r,Math.PI,Math.PI+(Math.min(p,100)/100)*Math.PI);ctx.strokeStyle=color;ctx.lineWidth=15;ctx.lineCap='round';ctx.stroke();}
+}
+
+function renderExec(){
+  const m=curM();
+  document.getElementById('execSub').textContent=`${MN[m-1]} ${document.getElementById('yearSel').value} — 13 فرع`;
+
+  let mRT=0,mRA=0,mOT=0,mOA=0;
+  BR.forEach((_,i)=>{mRT+=mT2(i,m);mRA+=mP2(i,m).rev;mOT+=tgts[i].monthlyOcc;mOA+=mP2(i,m).occ;});
+  const avgOT=Math.round(mOT/BR.length),avgOA=Math.round(mOA/BR.length),mRP=pct(mRA,mRT),mOP=pct(avgOA,avgOT);
+
+  let cRT=0,cRA=0,cOT=0,cOA=0;
+  BR.forEach((_,i)=>{for(let mm=1;mm<=m;mm++){cRT+=mT2(i,mm);cRA+=mP2(i,mm).rev;cOT+=tgts[i].monthlyOcc;cOA+=mP2(i,mm).occ;}});
+  const avgCOT=Math.round(cOT/(BR.length*m)),avgCOA=Math.round(cOA/(BR.length*m)),cRP=pct(cRA,cRT),cOP=pct(avgCOA,avgCOT);
+
+  let bG=0,bY=0,bR=0;
+  BR.forEach((_,i)=>{const p=pct(mP2(i,m).rev,mT2(i,m));if(p>90)bG++;else if(p>=70)bY++;else bR++;});
+  const totYr=BR.reduce((s,_,i)=>s+tgts[i].yearlyRev,0),proj=m>0?Math.round(cRA/m*12):0;
+
+  document.getElementById('execKpis').innerHTML=`
+    <div class="card kpi ca"><div class="ki">💰</div><div class="kl">إيراد شهري محقق</div><div class="kv ca">${N(mRA)}</div><div class="ks">من ${N(mRT)} • <strong style="color:${gc(mRP)}">${mRP}%</strong></div></div>
+    <div class="card kpi cb"><div class="ki">📈</div><div class="kl">إيراد تراكمي محقق (${m} أشهر)</div><div class="kv cb">${N(cRA)}</div><div class="ks">من ${N(cRT)} • <strong style="color:${gc(cRP)}">${cRP}%</strong></div></div>
+    <div class="card kpi cy"><div class="ki">🔮</div><div class="kl">إيراد سنوي متوقع</div><div class="kv cy">${N(proj)}</div><div class="ks">المستهدف السنوي: ${N(totYr)}</div></div>
+    <div class="card kpi ${gcl(mRP)}"><div class="ki">📊</div><div class="kl">نسبة تحقيق الإيراد الشهري</div><div class="kv ${gcl(mRP)}">${mRP}%</div><div class="ks">${MN[m-1]}</div></div>
+    <div class="card kpi"><div class="ki">🏢</div><div class="kl">حالة الفروع الـ 13</div><div class="kv"><span style="color:var(--green)">${bG}</span><span style="color:var(--muted);font-size:14px;"> / </span><span style="color:var(--gold)">${bY}</span><span style="color:var(--muted);font-size:14px;"> / </span><span style="color:var(--red)">${bR}</span></div><div class="ks">محقق / قريب / دون الهدف</div></div>
+  `;
+
+  setTimeout(()=>{
+    dg('gRev',mRP,gc(mRP));document.getElementById('gRevV').innerHTML=`<span style="color:${gc(mRP)}">${mRP}%</span>`;document.getElementById('gRevS').textContent=`${N(mRA)} من ${N(mRT)}`;
+    dg('gOcc',mOP,gc(mOP));document.getElementById('gOccV').innerHTML=`<span style="color:${gc(mOP)}">${mOP}%</span>`;document.getElementById('gOccS').textContent=`${avgOA}% من ${avgOT}%`;
+    dg('gCR',cRP,gc(cRP));document.getElementById('gCRV').innerHTML=`<span style="color:${gc(cRP)}">${cRP}%</span>`;document.getElementById('gCRS').textContent=`${N(cRA)} من ${N(cRT)}`;
+    dg('gCO',cOP,gc(cOP));document.getElementById('gCOV').innerHTML=`<span style="color:${gc(cOP)}">${cOP}%</span>`;document.getElementById('gCOS').textContent=`${avgCOA}% من ${avgCOT}%`;
+  },40);
+
+  let html='';
+  BR.forEach((name,i)=>{
+    const mt=mT2(i,m),mp=mP2(i,m),rp=pct(mp.rev,mt),op=pct(mp.occ,tgts[i].monthlyOcc);
+    const cls=rp>90?'tg':rp>=70?'ty':'tr';
+    html+=`<div class="ec ${cls}" onclick="goToBranch(${i})">
+      <div class="ecn">${i+1}</div>
+      <div class="ecname">${name}</div>
+      <div class="ecrow"><span class="ecl">إيراد محقق</span><span class="ecv" style="color:${gc(rp)}">${N(mp.rev)}</span></div>
+      <div class="ecbar"><div class="ecfill" style="width:${Math.min(rp,100)}%;background:${gc(rp)};"></div></div>
+      <div class="ecrow"><span class="ecl">مستهدف</span><span class="ecv" style="color:var(--muted)">${N(mt)}</span></div>
+      <div class="ecrow" style="margin-top:7px;"><span class="ecl">إشغال محقق</span><span class="ecv" style="color:${gc(op)}">${mp.occ}%</span></div>
+      <div class="ecbar"><div class="ecfill" style="width:${Math.min(op,100)}%;background:${gc(op)};"></div></div>
+      <div class="ecpct" style="color:${gc(rp)}">${rp}%</div>
+    </div>`;
+  });
+  document.getElementById('execCards').innerHTML=html;
+
+  const ranked=[...BR.map((n,i)=>({n,i,rev:mP2(i,m).rev,p:pct(mP2(i,m).rev,mT2(i,m))}))];
+  const top5=[...ranked].sort((a,b)=>b.rev-a.rev).slice(0,5);
+  const bot5=[...ranked].sort((a,b)=>a.p-b.p).slice(0,5);
+
+  ['topC','botC','execTrend'].forEach(id=>{if(charts[id])charts[id].destroy();});
+
+  const barBg=arr=>arr.map(x=>{const p=x.p||x;return p>90?'rgba(34,197,94,0.65)':p>=70?'rgba(245,158,11,0.65)':'rgba(239,68,68,0.65)';});
+
+  charts.topC=new Chart(document.getElementById('topC'),{type:'bar',data:{labels:top5.map(x=>x.n),datasets:[{label:'إيراد محقق',data:top5.map(x=>x.rev),backgroundColor:barBg(top5),borderWidth:0,borderRadius:5}]},options:{...CO,indexAxis:'y',plugins:{legend:{display:false}}}});
+  charts.botC=new Chart(document.getElementById('botC'),{type:'bar',data:{labels:bot5.map(x=>x.n),datasets:[{label:'% التحقيق',data:bot5.map(x=>x.p),backgroundColor:barBg(bot5),borderWidth:0,borderRadius:5}]},options:{...CO,indexAxis:'y',plugins:{legend:{display:false}},scales:{...CO.scales,x:{...CO.scales.x,max:130}}}});
+
+  const allT=[],allA=[];
+  for(let mm=1;mm<=12;mm++){let t=0,a=0;BR.forEach((_,i)=>{t+=mT2(i,mm);a+=mP2(i,mm).rev;});allT.push(t);allA.push(a);}
+  charts.execTrend=new Chart(document.getElementById('execTrend'),{type:'bar',data:{labels:MN,datasets:[{label:'مستهدف',data:allT,backgroundColor:'rgba(59,130,246,0.35)',borderColor:'rgba(59,130,246,0.8)',borderWidth:1},{label:'محقق',data:allA,backgroundColor:'rgba(0,212,170,0.35)',borderColor:'rgba(0,212,170,0.8)',borderWidth:1}]},options:CO});
+}
+
+function goToBranch(i){document.getElementById('bdSel').value=i;showTab('branch-detail');}
+
+function initBdSel(){
+  document.getElementById('bdSel').innerHTML=BR.map((n,i)=>`<option value="${i}">${i+1}. ${n}</option>`).join('');
+}
+
+function renderBD(){
+  const i=parseInt(document.getElementById('bdSel').value)||0;
+  const t=tgts[i],name=BR[i],m=curM();
+  let yRT=0,yRA=0,cRT=0,cRA=0;
+  for(let mm=1;mm<=12;mm++){yRT+=mT2(i,mm);yRA+=mP2(i,mm).rev;}
+  for(let mm=1;mm<=m;mm++){cRT+=mT2(i,mm);cRA+=mP2(i,mm).rev;}
+  const mmt=mT2(i,m),mma=mP2(i,m).rev,moa=mP2(i,m).occ;
+  const mRP=pct(mma,mmt),mOP=pct(moa,t.monthlyOcc),cRP=pct(cRA,cRT),yRP=pct(yRA,yRT);
+
+  document.getElementById('bdName').textContent=name;
+  document.getElementById('bdSub').textContent=`المستهدف السنوي: ${N(yRT)} ريال — تحقيق سنوي حتى الآن: ${yRP}%`;
+  document.getElementById('bdStats').innerHTML=`
+    <div class="bd-stat"><div class="bd-sv" style="color:${gc(mRP)}">${N(mma)}</div><div class="bd-sl">إيراد ${MN[m-1]}</div></div>
+    <div class="bd-stat"><div class="bd-sv" style="color:${gc(mOP)}">${moa}%</div><div class="bd-sl">إشغال ${MN[m-1]}</div></div>
+    <div class="bd-stat"><div class="bd-sv" style="color:${gc(cRP)}">${N(cRA)}</div><div class="bd-sl">تراكمي (${m} أشهر)</div></div>
+    <div class="bd-stat"><div class="bd-sv" style="color:${gc(yRP)}">${yRP}%</div><div class="bd-sl">تحقيق سنوي</div></div>
+  `;
+
+  document.getElementById('bdKpis').innerHTML=`
+    <div class="card kpi ${gcl(mRP)}"><div class="ki">💰</div><div class="kl">إيراد ${MN[m-1]}</div><div class="kv ${gcl(mRP)}">${N(mma)}</div><div class="ks">من ${N(mmt)} • <strong style="color:${gc(mRP)}">${mRP}%</strong></div></div>
+    <div class="card kpi ${gcl(mOP)}"><div class="ki">🏨</div><div class="kl">إشغال ${MN[m-1]}</div><div class="kv ${gcl(mOP)}">${moa}%</div><div class="ks">من ${t.monthlyOcc}% • <strong style="color:${gc(mOP)}">${mOP}%</strong></div></div>
+    <div class="card kpi ${gcl(cRP)}"><div class="ki">📈</div><div class="kl">إيراد تراكمي (${m} أشهر)</div><div class="kv ${gcl(cRP)}">${N(cRA)}</div><div class="ks">من ${N(cRT)} • <strong style="color:${gc(cRP)}">${cRP}%</strong></div></div>
+    <div class="card kpi cb"><div class="ki">🎯</div><div class="kl">المستهدف السنوي</div><div class="kv cb">${N(yRT)}</div><div class="ks">محقق: ${N(yRA)} • <strong style="color:${gc(yRP)}">${yRP}%</strong></div></div>
+  `;
+
+  let html='',mRT=[],mRA=[],mOT=[],mOA=[],lbls=[];
+  for(let mm=1;mm<=12;mm++){
+    const mt2=mT2(i,mm),mp2=mP2(i,mm),rp2=pct(mp2.rev,mt2),op2=pct(mp2.occ,t.monthlyOcc),gap=mp2.rev-mt2;
+    const cur=mm===m,past=mm<=m;
+    mRT.push(mt2);mRA.push(mp2.rev);mOT.push(t.monthlyOcc);mOA.push(mp2.occ);lbls.push(MN[mm-1]);
+    html+=`<tr style="${cur?'background:rgba(0,212,170,.07);':mm>m?'opacity:.4;':''}">
+      <td style="${cur?'color:var(--accent);font-weight:700;':''}">${MN[mm-1]}${cur?' ◄':''}</td>
+      <td>${N(mt2)}</td>
+      <td style="color:${past?gc(rp2):'var(--muted)'}">${past?N(mp2.rev):'—'}</td>
+      <td style="color:${gap>=0?'var(--green)':'var(--red)'};font-weight:700;">${past?(gap>=0?'+':'')+N(gap):'—'}</td>
+      <td>${past?prow(rp2,gc(rp2)):'—'}</td>
+      <td>${t.monthlyOcc}%</td>
+      <td style="color:${past?gc(op2):'var(--muted)'}">${past?mp2.occ+'%':'—'}</td>
+      <td>${past?prow(op2,gc(op2)):'—'}</td>
+      <td>${past?bdg(Math.min(rp2,op2)):'<span class="badge bm">قادم</span>'}</td>
+    </tr>`;
+  }
+  const totRP=pct(yRA,yRT);
+  html+=`<tr style="background:var(--s2);font-weight:700;"><td style="color:var(--accent)">المجموع السنوي</td><td>${N(yRT)}</td><td style="color:${gc(totRP)}">${N(yRA)}</td><td style="color:${yRA-yRT>=0?'var(--green)':'var(--red)'}">${(yRA-yRT>=0?'+':'')+N(yRA-yRT)}</td><td colspan="5"><strong style="color:${gc(totRP)}">${totRP}% تحقيق سنوي</strong></td></tr>`;
+  document.getElementById('bdTbody').innerHTML=html;
+
+  ['bdRevC','bdOccC','bdCumC'].forEach(id=>{if(charts[id])charts[id].destroy();});
+  charts.bdRevC=new Chart(document.getElementById('bdRevC'),{type:'bar',data:{labels:lbls,datasets:[{label:'مستهدف',data:mRT,backgroundColor:'rgba(59,130,246,0.4)',borderColor:'rgba(59,130,246,0.8)',borderWidth:1},{label:'محقق',data:mRA,backgroundColor:mRA.map((v,mi)=>{const p3=pct(v,mRT[mi]);return p3>90?'rgba(34,197,94,0.6)':p3>=70?'rgba(245,158,11,0.6)':'rgba(239,68,68,0.6)';}),borderColor:mRA.map((v,mi)=>{const p3=pct(v,mRT[mi]);return p3>90?'rgba(34,197,94,1)':p3>=70?'rgba(245,158,11,1)':'rgba(239,68,68,1)';}),borderWidth:1}]},options:CO});
+  charts.bdOccC=new Chart(document.getElementById('bdOccC'),{type:'line',data:{labels:lbls,datasets:[{label:'مستهدف%',data:mOT,borderColor:'rgba(59,130,246,0.8)',tension:.4,borderDash:[5,5],pointRadius:3},{label:'محقق%',data:mOA,borderColor:'rgba(0,212,170,0.8)',backgroundColor:'rgba(0,212,170,0.07)',tension:.4,fill:true,pointRadius:4}]},options:{...CO,scales:{...CO.scales,y:{...CO.scales.y,max:110}}}});
+  let cumT=[],cumA=[];let r1=0,r2=0;mRT.forEach((v,mi)=>{r1+=v;r2+=mRA[mi];cumT.push(r1);cumA.push(r2);});
+  charts.bdCumC=new Chart(document.getElementById('bdCumC'),{type:'line',data:{labels:lbls,datasets:[{label:'تراكمي مستهدف',data:cumT,borderColor:'rgba(59,130,246,0.8)',backgroundColor:'rgba(59,130,246,0.06)',tension:.4,fill:true},{label:'تراكمي محقق',data:cumA,borderColor:'rgba(0,212,170,0.8)',backgroundColor:'rgba(0,212,170,0.07)',tension:.4,fill:true}]},options:CO});
+
+  // Weekly breakdown
+  renderWeeklyBreakdown(i, m);
+}
+
+function renderWeeklyBreakdown(branchIdx){
+  const container=document.getElementById('weeklySection');
+  if(!container) return;
+  const m=curM();
+  const perfData=perf[branchIdx]&&perf[branchIdx][m];
+  if(!perfData||!perfData.weekly){container.style.display='none';return;}
+  container.style.display='block';
+  const weekly=perfData.weekly;
+  const monthTarget=tgts[branchIdx].arr?tgts[branchIdx].arr[m-1]:tgts[branchIdx].monthlyRev;
+  const weekTarget=Math.round(monthTarget/4);
+  let html='';
+  weekly.forEach((w,wi)=>{
+    const rp=weekTarget>0?Math.round(w.rev/weekTarget*100):0;
+    const gc=rp>90?'var(--success)':rp>=70?'var(--gold)':'var(--danger)';
+    const diff=w.rev-weekTarget;
+    html+=`<tr><td style="padding:10px 14px;font-weight:700;">الأسبوع ${wi+1}</td>
+      <td style="padding:10px 14px;">${weekTarget.toLocaleString('en-US')}</td>
+      <td style="padding:10px 14px;color:${gc};font-weight:700;">${w.rev.toLocaleString('en-US')}</td>
+      <td style="padding:10px 14px;color:${diff>=0?'var(--success)':'var(--danger)'};">${(diff>=0?'+':'')+diff.toLocaleString('en-US')}</td>
+      <td style="padding:10px 14px;"><div style="display:flex;align-items:center;gap:8px;"><div style="flex:1;height:8px;background:var(--surface2);border-radius:99px;overflow:hidden;min-width:60px;"><div style="width:${Math.min(rp,100)}%;height:100%;background:${gc};border-radius:99px;"></div></div><span style="color:${gc};font-weight:700;">${rp}%</span></div></td>
+      <td style="padding:10px 14px;"><span style="color:${w.occ>=(tgts[branchIdx].monthlyOcc*.9)?'var(--success)':'var(--gold)'};font-weight:700;">${w.occ.toFixed(1)}%</span><span style="color:var(--muted);font-size:11px;"> / مستهدف ${tgts[branchIdx].monthlyOcc}%</span></td>
+    </tr>`;
+  });
+  const totalRev=weekly.reduce((s,w)=>s+w.rev,0);
+  const avgOcc=weekly.reduce((s,w)=>s+w.occ,0)/4;
+  const totRp=monthTarget>0?Math.round(totalRev/monthTarget*100):0;
+  const totGc=totRp>90?'var(--success)':totRp>=70?'var(--gold)':'var(--danger)';
+  html+=`<tr style="background:var(--surface2);font-weight:700;">
+    <td style="padding:10px 14px;color:var(--accent);">المجموع</td>
+    <td style="padding:10px 14px;">${monthTarget.toLocaleString('en-US')}</td>
+    <td style="padding:10px 14px;color:${totGc};">${totalRev.toLocaleString('en-US')}</td>
+    <td style="padding:10px 14px;color:${(totalRev-monthTarget)>=0?'var(--success)':'var(--danger)'};">${(totalRev-monthTarget>=0?'+':'')+(totalRev-monthTarget).toLocaleString('en-US')}</td>
+    <td style="padding:10px 14px;color:${totGc};font-size:15px;">${totRp}%</td>
+    <td style="padding:10px 14px;color:var(--accent);">${avgOcc.toFixed(1)}% متوسط</td></tr>`;
+  document.getElementById('weeklyTbody').innerHTML=html;
+  if(charts.weeklyChart) charts.weeklyChart.destroy();
+  charts.weeklyChart=new Chart(document.getElementById('weeklyChart'),{
+    type:'bar',
+    data:{labels:['الأسبوع 1','الأسبوع 2','الأسبوع 3','الأسبوع 4'],
+      datasets:[
+        {label:'إيراد أسبوعي',data:weekly.map(w=>w.rev),
+          backgroundColor:weekly.map(w=>{const p2=weekTarget>0?Math.round(w.rev/weekTarget*100):0;return p2>=100?'rgba(34,197,94,0.6)':p2>=80?'rgba(245,158,11,0.6)':'rgba(239,68,68,0.6)';}),
+          borderWidth:1,yAxisID:'y'},
+        {label:'إشغال %',data:weekly.map(w=>w.occ),type:'line',
+          borderColor:'rgba(245,158,11,0.9)',backgroundColor:'rgba(245,158,11,0.1)',
+          tension:.4,fill:false,pointRadius:6,yAxisID:'y1'}
+      ]},
+    options:{responsive:true,plugins:{legend:{labels:{color:'#94a3b8',font:{family:'Cairo'}}}},
+      scales:{
+        x:{ticks:{color:'#64748b'},grid:{color:'rgba(255,255,255,0.04)'}},
+        y:{ticks:{color:'#64748b'},grid:{color:'rgba(255,255,255,0.04)'},title:{display:true,text:'الإيراد (ريال)',color:'#64748b'}},
+        y1:{type:'linear',position:'left',ticks:{color:'#f59e0b'},grid:{display:false},min:0,max:100,title:{display:true,text:'الإشغال %',color:'#f59e0b'}}
+      }}
+  });
+}
+
+function renderOV(){
+  const m=curM();
+  let tRT=0,tRA=0,tOT=0,tOA=0,bG=0;
+  BR.forEach((_,i)=>{const mt=mT2(i,m),mp=mP2(i,m);tRT+=mt;tRA+=mp.rev;tOT+=tgts[i].monthlyOcc;tOA+=mp.occ;if(pct(mp.rev,mt)>=100)bG++;});
+  const avgOT=Math.round(tOT/BR.length),avgOA=Math.round(tOA/BR.length),rP=pct(tRA,tRT),oP=pct(avgOA,avgOT);
+  document.getElementById('kpiGrid').innerHTML=`
+    <div class="card kpi cg"><div class="ki">💰</div><div class="kl">إجمالي الإيراد المحقق</div><div class="kv cg">${N(tRA)}</div><div class="ks">من ${N(tRT)} • <strong style="color:${gc(rP)}">${rP}%</strong></div></div>
+    <div class="card kpi cb"><div class="ki">🏨</div><div class="kl">متوسط الإشغال</div><div class="kv cb">${avgOA}%</div><div class="ks">من ${avgOT}% • <strong style="color:${gc(oP)}">${oP}%</strong></div></div>
+    <div class="card kpi cy"><div class="ki">🏆</div><div class="kl">الفروع المحققة</div><div class="kv cy">${bG}</div><div class="ks">من ${BR.length} فرع</div></div>
+    <div class="card kpi ${gcl(rP)}"><div class="ki">📊</div><div class="kl">نسبة التحقيق الكلية</div><div class="kv ${gcl(rP)}">${rP}%</div><div class="ks">${MN[m-1]}</div></div>
+  `;
+  ['revC','occC'].forEach(id=>{if(charts[id])charts[id].destroy();});
+  charts.revC=new Chart(document.getElementById('revC'),{type:'bar',data:{labels:BR.map((_,i)=>`ف${i+1}`),datasets:[{label:'مستهدف',data:BR.map((_,i)=>mT2(i,m)),backgroundColor:'rgba(59,130,246,0.4)',borderColor:'rgba(59,130,246,0.8)',borderWidth:1},{label:'محقق',data:BR.map((_,i)=>mP2(i,m).rev),backgroundColor:'rgba(0,212,170,0.4)',borderColor:'rgba(0,212,170,0.8)',borderWidth:1}]},options:CO});
+  charts.occC=new Chart(document.getElementById('occC'),{type:'bar',data:{labels:BR.map((_,i)=>`ف${i+1}`),datasets:[{label:'مستهدف%',data:BR.map((_,i)=>tgts[i].monthlyOcc),backgroundColor:'rgba(245,158,11,0.4)',borderColor:'rgba(245,158,11,0.8)',borderWidth:1},{label:'محقق%',data:BR.map((_,i)=>mP2(i,m).occ),backgroundColor:'rgba(34,197,94,0.4)',borderColor:'rgba(34,197,94,0.8)',borderWidth:1}]},options:{...CO,scales:{...CO.scales,y:{...CO.scales.y,max:100}}}});
+  let html='';
+  BR.forEach((name,i)=>{const mt=mT2(i,m),mp=mP2(i,m),rp=pct(mp.rev,mt),op=pct(mp.occ,tgts[i].monthlyOcc);html+=`<tr><td><span class="bn"><span class="bnum">${i+1}</span>${name}</span></td><td>${N(mt)}</td><td>${N(mp.rev)}</td><td>${prow(rp,gc(rp))}</td><td>${tgts[i].monthlyOcc}%</td><td>${mp.occ}%</td><td>${prow(op,gc(op))}</td><td>${bdg(Math.min(rp,op))}</td><td><button class="abtn" onclick="goToBranch(${i})">تفصيل</button></td></tr>`;});
+  document.getElementById('ovTbody').innerHTML=html;
+}
+
+function renderBR(){
+  const m=curM();
+  let html='';
+  BR.forEach((name,i)=>{const mt=mT2(i,m),mp=mP2(i,m),rp=pct(mp.rev,mt),op=pct(mp.occ,tgts[i].monthlyOcc),gap=mp.rev-mt,og=mp.occ-tgts[i].monthlyOcc;html+=`<tr><td><span class="bnum">${i+1}</span></td><td><strong>${name}</strong></td><td>${N(mt)}</td><td style="color:${gc(rp)}">${N(mp.rev)}</td><td style="color:${gap>=0?'var(--green)':'var(--red)'};font-weight:700;">${gap>=0?'+':''}${N(gap)}</td><td>${tgts[i].monthlyOcc}%</td><td style="color:${gc(op)}">${mp.occ}%</td><td style="color:${og>=0?'var(--green)':'var(--red)'};font-weight:700;">${og>=0?'+':''}${og}%</td><td>${bdg(Math.round((rp+op)/2))}</td><td><button class="abtn" onclick="goToBranch(${i})">تفصيل</button></td></tr>`;});
+  document.getElementById('brTbody').innerHTML=html;
+
+  let mH='',colT=Array(12).fill(0),grand=0;
+  BR.forEach((name,i)=>{const arr=tgts[i].arr||Array(12).fill(tgts[i].monthlyRev);const tot=arr.reduce((s,v)=>s+v,0);grand+=tot;arr.forEach((v,mi)=>colT[mi]+=v);mH+=`<tr><td><span class="bn"><span class="bnum">${i+1}</span>${name}</span></td>${arr.map((v,mi)=>`<td style="${mi===m-1?'color:var(--accent);font-weight:700;background:rgba(0,212,170,.06)':''}">${N(v)}</td>`).join('')}<td style="font-weight:700;color:var(--accent)">${N(tot)}</td></tr>`;});
+  mH+=`<tr style="background:var(--s2);font-weight:700;"><td style="color:var(--accent)">المجموع</td>${colT.map((v,mi)=>`<td style="${mi===m-1?'color:var(--accent)':''}">${N(v)}</td>`).join('')}<td style="color:var(--accent)">${N(grand)}</td></tr>`;
+  document.getElementById('mthTbody').innerHTML=mH;
+}
+
+function renderCum(){
+  let pills='';for(let m=1;m<=12;m++) pills+=`<button class="mpill ${m===cumUpTo?'active':''}" onclick="setCum(${m})">${MN[m-1]}</button>`;
+  document.getElementById('cumPills').innerHTML=pills;
+
+  let tRT=0,tRA=0,tOT=0,tOA=0;
+  BR.forEach((_,i)=>{for(let m=1;m<=cumUpTo;m++){tRT+=mT2(i,m);tRA+=mP2(i,m).rev;tOT+=tgts[i].monthlyOcc;tOA+=mP2(i,m).occ;}});
+  const avgOT=Math.round(tOT/(BR.length*cumUpTo)),avgOA=Math.round(tOA/(BR.length*cumUpTo)),rP=pct(tRA,tRT),oP=pct(avgOA,avgOT);
+
+  document.getElementById('cumKpis').innerHTML=`
+    <div class="card kpi cb"><div class="ki">🎯</div><div class="kl">إيراد تراكمي مستهدف</div><div class="kv cb">${N(tRT)}</div><div class="ks">${cumUpTo} أشهر – جميع الفروع</div></div>
+    <div class="card kpi ${gcl(rP)}"><div class="ki">💰</div><div class="kl">إيراد تراكمي محقق</div><div class="kv ${gcl(rP)}">${N(tRA)}</div><div class="ks"><strong style="color:${gc(rP)}">${rP}%</strong> تحقيق</div></div>
+    <div class="card kpi cy"><div class="ki">🏨</div><div class="kl">إشغال مستهدف (متوسط)</div><div class="kv cy">${avgOT}%</div><div class="ks">عبر الفروع</div></div>
+    <div class="card kpi ${gcl(oP)}"><div class="ki">📊</div><div class="kl">إشغال محقق (متوسط)</div><div class="kv ${gcl(oP)}">${avgOA}%</div><div class="ks"><strong style="color:${gc(oP)}">${oP}%</strong> تحقيق</div></div>
+  `;
+
+  const lbls=MN.slice(0,cumUpTo),cRT=[],cRA=[],cOT=[],cOA=[];let r1=0,r2=0,o1=0,o2=0;
+  for(let m=1;m<=cumUpTo;m++){let a=0,b=0,c=0,d=0;BR.forEach((_,i)=>{a+=mT2(i,m);b+=mP2(i,m).rev;c+=tgts[i].monthlyOcc;d+=mP2(i,m).occ;});r1+=a;r2+=b;o1+=Math.round(c/BR.length);o2+=Math.round(d/BR.length);cRT.push(r1);cRA.push(r2);cOT.push(Math.round(o1/m));cOA.push(Math.round(o2/m));}
+
+  ['cumRC','cumOC'].forEach(id=>{if(charts[id])charts[id].destroy();});
+  charts.cumRC=new Chart(document.getElementById('cumRC'),{type:'line',data:{labels:lbls,datasets:[{label:'مستهدف تراكمي',data:cRT,borderColor:'rgba(59,130,246,0.9)',backgroundColor:'rgba(59,130,246,0.07)',tension:.4,fill:true},{label:'محقق تراكمي',data:cRA,borderColor:'rgba(0,212,170,0.9)',backgroundColor:'rgba(0,212,170,0.07)',tension:.4,fill:true}]},options:CO});
+  charts.cumOC=new Chart(document.getElementById('cumOC'),{type:'line',data:{labels:lbls,datasets:[{label:'إشغال مستهدف%',data:cOT,borderColor:'rgba(245,158,11,0.9)',backgroundColor:'rgba(245,158,11,0.07)',tension:.4,fill:true},{label:'إشغال محقق%',data:cOA,borderColor:'rgba(34,197,94,0.9)',backgroundColor:'rgba(34,197,94,0.07)',tension:.4,fill:true}]},options:{...CO,scales:{...CO.scales,y:{...CO.scales.y,max:100}}}});
+
+  let html='';
+  BR.forEach((name,i)=>{let bRT=0,bRA=0,bOT=0,bOA=0;for(let m=1;m<=cumUpTo;m++){bRT+=mT2(i,m);bRA+=mP2(i,m).rev;bOT+=tgts[i].monthlyOcc;bOA+=mP2(i,m).occ;}const avgOT2=Math.round(bOT/cumUpTo),avgOA2=Math.round(bOA/cumUpTo),rp2=pct(bRA,bRT),op2=pct(avgOA2,avgOT2);html+=`<tr><td><span class="bn"><span class="bnum">${i+1}</span>${name}</span></td><td>${N(bRT)}</td><td style="color:${gc(rp2)}">${N(bRA)}</td><td>${prow(rp2,gc(rp2))}</td><td>${avgOT2}%</td><td style="color:${gc(op2)}">${avgOA2}%</td><td>${prow(op2,gc(op2))}</td></tr>`;});
+  document.getElementById('cumBrT').innerHTML=html;
+}
+
+function setCum(m){cumUpTo=m;renderCum();}
+
+function renderAnn(){
+  let tYRT=0,tYRA=0,tOT=0,tOA=0;
+  BR.forEach((_,i)=>{tYRT+=tgts[i].yearlyRev;for(let m=1;m<=12;m++){tYRA+=mP2(i,m).rev;tOT+=tgts[i].monthlyOcc;tOA+=mP2(i,m).occ;}});
+  const m=curM(),avgOT=Math.round(tOT/(BR.length*12)),avgOA=Math.round(tOA/(BR.length*12)),rP=pct(tYRA,tYRT),oP=pct(avgOA,avgOT);
+  let sF=0;BR.forEach((_,i)=>{for(let mm=1;mm<=m;mm++) sF+=mP2(i,mm).rev;});
+  const proj=m>0?Math.round(sF/m*12):0,pP=pct(proj,tYRT);
+  const onTrack=BR.filter((_,i)=>pct(Object.values(perf[i]).reduce((s,v)=>s+v.rev,0),tgts[i].yearlyRev)>=70).length;
+  document.getElementById('annGrid').innerHTML=`
+    <div class="ann-c"><h4>المستهدف السنوي للإيراد</h4><div class="ann-big">${N(tYRT)}</div><div class="ann-sub">ريال سعودي – جميع الفروع</div></div>
+    <div class="ann-c"><h4>الإيراد المحقق حتى الآن</h4><div class="ann-big" style="color:${gc(rP)}">${N(tYRA)}</div><div class="ann-sub">${rP}% من المستهدف • ${m} أشهر</div></div>
+    <div class="ann-c"><h4>الإيراد السنوي المتوقع</h4><div class="ann-big" style="color:${gc(pP)}">${N(proj)}</div><div class="ann-sub">${pP}% من المستهدف السنوي</div></div>
+    <div class="ann-c"><h4>مستهدف الإشغال السنوي</h4><div class="ann-big">${avgOT}%</div><div class="ann-sub">متوسط الفروع</div></div>
+    <div class="ann-c"><h4>الإشغال المحقق (السنة)</h4><div class="ann-big" style="color:${gc(oP)}">${avgOA}%</div><div class="ann-sub">${oP}% من المستهدف</div></div>
+    <div class="ann-c"><h4>الفروع على مسار التحقيق</h4><div class="ann-big">${onTrack}</div><div class="ann-sub">من ${BR.length} فرع (نسبة ≥80%)</div></div>
+  `;
+  const mRT=[],mRA=[];for(let mm=1;mm<=12;mm++){let t=0,a=0;BR.forEach((_,i)=>{t+=mT2(i,mm);a+=mP2(i,mm).rev;});mRT.push(t);mRA.push(a);}
+  const bPcts=BR.map((_,i)=>{const a=Object.values(perf[i]).reduce((s,v)=>s+v.rev,0);return pct(a,tgts[i].yearlyRev);});
+  ['annRC','annBC'].forEach(id=>{if(charts[id])charts[id].destroy();});
+  charts.annRC=new Chart(document.getElementById('annRC'),{type:'bar',data:{labels:MN,datasets:[{label:'مستهدف شهري',data:mRT,backgroundColor:'rgba(59,130,246,0.4)',borderColor:'rgba(59,130,246,0.8)',borderWidth:1},{label:'محقق شهري',data:mRA,backgroundColor:'rgba(0,212,170,0.4)',borderColor:'rgba(0,212,170,0.8)',borderWidth:1}]},options:CO});
+  charts.annBC=new Chart(document.getElementById('annBC'),{type:'bar',data:{labels:BR.map((_,i)=>`ف${i+1}`),datasets:[{label:'% التحقيق السنوي',data:bPcts,backgroundColor:bPcts.map(p=>p>90?'rgba(34,197,94,0.6)':p>=70?'rgba(245,158,11,0.6)':'rgba(239,68,68,0.6)'),borderColor:bPcts.map(p=>p>90?'rgba(34,197,94,1)':p>=70?'rgba(245,158,11,1)':'rgba(239,68,68,1)'),borderWidth:1,borderRadius:4}]},options:CO});
+}
+
+/* MODALS */
+function populateSels(){
+  const opts=BR.map((n,i)=>`<option value="${i}">${i+1}. ${n}</option>`).join('');
+  document.getElementById('tBrSel').innerHTML=opts;
+  document.getElementById('pBrSel').innerHTML=opts;
+}
+function openSetTargetsModal(){populateSels();fillTF(0);document.getElementById('tBrSel').onchange=function(){fillTF(parseInt(this.value));};document.getElementById('targetsModal').classList.add('open');}
+function fillTF(i){const t=tgts[i],m=curM();document.getElementById('tRevM').value=t.arr?t.arr[m-1]:t.monthlyRev;document.getElementById('tRevY').value=Math.round(t.yearlyRev);document.getElementById('tOccM').value=t.monthlyOcc;document.getElementById('tOccY').value=t.yearlyOcc;}
+function saveTargets(){
+  const i=parseInt(document.getElementById('tBrSel').value),m=curM(),nv=parseFloat(document.getElementById('tRevM').value)||0;
+  if(tgts[i].arr)tgts[i].arr[m-1]=nv;
+  tgts[i].monthlyRev=nv;
+  tgts[i].yearlyRev=parseFloat(document.getElementById('tRevY').value)||0;
+  tgts[i].monthlyOcc=parseFloat(document.getElementById('tOccM').value)||0;
+  tgts[i].yearlyOcc=parseFloat(document.getElementById('tOccY').value)||0;
+  // Save to Firebase
+  if(window._fb && window._currentUser){
+    window.saveTargetsToFirebase(i, {
+      monthlyRev:tgts[i].monthlyRev,
+      yearlyRev:tgts[i].yearlyRev,
+      monthlyOcc:tgts[i].monthlyOcc,
+      yearlyOcc:tgts[i].yearlyOcc,
+      arr:tgts[i].arr
+    });
+  }
+  closeModals();
+  showToast('✅ تم حفظ المستهدفات');
+  renderAll();
+}
+
+function openUpdateModal(branchIdx){
+  resetUploadModal();
+  if(branchIdx!==undefined){
+    document.getElementById('preselBranch').value=branchIdx;
+    document.getElementById('preselBranchNote').style.display='flex';
+    document.getElementById('preselBranchName').textContent=BR[branchIdx];
+  } else {
+    document.getElementById('preselBranchNote').style.display='none';
+    document.getElementById('preselBranch').value='';
+  }
+  document.getElementById('uploadModal').classList.add('open');
+}
+
+function openBranchUpdate(i){openUploadModal();}
+function savePerformance(){
+  const i=parseInt(document.getElementById('pBrSel').value);
+  const m=parseInt(document.getElementById('pMonSel').value);
+  const data={rev:parseFloat(document.getElementById('pRev').value)||0,occ:parseFloat(document.getElementById('pOcc').value)||0};
+  perf[i][m]=data;
+  // Save to Firebase if available
+  if(window._fb && window._currentUser) {
+    window.saveToFirebase(i, m, data);
+  } else {
+    showToast('✅ تم تحديث بيانات الأداء');
+  }
+  closeModals();
+  renderAll();
+}
+function closeModals(){document.querySelectorAll('.modal-overlay').forEach(e=>e.classList.remove('open'));}
+document.querySelectorAll('.modal-overlay').forEach(el=>el.addEventListener('click',e=>{if(e.target===el)closeModals();}));
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
+
+
+/* ===================== EXCEL UPLOAD ===================== */
+const BRANCH_NAMES = ['الأحساء','الجوف','التمام','الرياض','المجمعة','المدينة المنورة',
+  'بريدة','تبوك','جازان','جدة','حائل','خميس مشيط','مكة المكرمة'];
+
+let parsedWeeklyData = null; // { branchIdx: { w1rev, w1occ, w2rev, w2occ, w3rev, w3occ, w4rev, w4occ } }
+
+function openUploadModal() {
+  const m = curM();
+  document.getElementById('uploadMonthSel').value = m;
+  document.getElementById('uploadPreview').style.display = 'none';
+  document.getElementById('confirmUploadBtn').style.display = 'none';
+  document.getElementById('xlsxFile').value = '';
+  parsedWeeklyData = null;
+  document.getElementById('uploadModal').classList.add('open');
+}
+
+function processFile(file) {
+  if (!file.name.endsWith('.xlsx') && !file.name.endsWith('.xls')) {
+    showToast('⚠ الرجاء رفع ملف Excel (.xlsx)');
+    return;
+  }
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const data = new Uint8Array(e.target.result);
+      const workbook = XLSX.read(data, { type: 'array' });
+      const sheet = workbook.Sheets[workbook.SheetNames[0]];
+      const rows = XLSX.utils.sheet_to_json(sheet, { header: 1, defval: 0 });
+      parseWeeklyRows(rows);
+    } catch(err) {
+      showToast('❌ خطأ في قراءة الملف: ' + err.message);
+    }
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+function parseWeeklyRows(rows) {
+  // Template structure: for each month block:
+  //   Row 0: month header (merged)
+  //   Row 1: column headers
+  //   Rows 2-14: 13 branches (col0=name, col1=w1rev, col2=w1occ, col3=w2rev, col4=w2occ, col5=w3rev, col6=w3occ, col7=w4rev, col8=w4occ, col9=totalrev, col10=avgocc)
+  //   Row 15: totals
+  //   (blank row)
+  // Each month block = 17 rows
+
+  const BLOCK = 17; // rows per month block
+  const selectedMonth = parseInt(document.getElementById('uploadMonthSel').value);
+  const blockStart = 2 + (selectedMonth - 1) * BLOCK; // 0-indexed, skip title rows (rows 0,1 = title + instruction)
+
+  const extracted = [];
+  for (let bi = 0; bi < 13; bi++) {
+    const rowIdx = blockStart + 2 + bi; // +2 for month header + column header rows
+    const row = rows[rowIdx] || [];
+    
+    const branchName = (row[0] || '').toString().trim();
+    const w1rev = parseFloat(row[1]) || 0;
+    const w1occ = parseFloat(row[2]) || 0;
+    const w2rev = parseFloat(row[3]) || 0;
+    const w2occ = parseFloat(row[4]) || 0;
+    const w3rev = parseFloat(row[5]) || 0;
+    const w3occ = parseFloat(row[6]) || 0;
+    const w4rev = parseFloat(row[7]) || 0;
+    const w4occ = parseFloat(row[8]) || 0;
+    const totalRev = w1rev + w2rev + w3rev + w4rev;
+    const avgOcc = [w1occ,w2occ,w3occ,w4occ].filter(x=>x>0).length > 0 
+      ? Math.round(([w1occ,w2occ,w3occ,w4occ].reduce((s,v)=>s+v,0)) / [w1occ,w2occ,w3occ,w4occ].filter(x=>x>0).length * 10) / 10 
+      : 0;
+    
+    extracted.push({ branchName: branchName || BRANCH_NAMES[bi], bi, w1rev, w1occ, w2rev, w2occ, w3rev, w3occ, w4rev, w4occ, totalRev, avgOcc });
+  }
+
+  // If all rows are empty (wrong month sheet parsing), try to find data by branch name matching
+  const hasData = extracted.some(e => e.totalRev > 0 || e.avgOcc > 0);
+  if (!hasData) {
+    // Try scanning all rows for branch names
+    const byName = {};
+    rows.forEach(row => {
+      if (!row || !row[0]) return;
+      const name = row[0].toString().trim();
+      const idx = BRANCH_NAMES.indexOf(name);
+      if (idx >= 0 && (parseFloat(row[1])||0) + (parseFloat(row[3])||0) > 0) {
+        if (!byName[idx]) {
+          const w1r = parseFloat(row[1])||0, w1o = parseFloat(row[2])||0;
+          const w2r = parseFloat(row[3])||0, w2o = parseFloat(row[4])||0;
+          const w3r = parseFloat(row[5])||0, w3o = parseFloat(row[6])||0;
+          const w4r = parseFloat(row[7])||0, w4o = parseFloat(row[8])||0;
+          const tr = w1r+w2r+w3r+w4r;
+          const occs = [w1o,w2o,w3o,w4o].filter(x=>x>0);
+          const ao = occs.length ? Math.round(occs.reduce((s,v)=>s+v,0)/occs.length*10)/10 : 0;
+          byName[idx] = { bi:idx, w1rev:w1r, w1occ:w1o, w2rev:w2r, w2occ:w2o, w3rev:w3r, w3occ:w3o, w4rev:w4r, w4occ:w4o, totalRev:tr, avgOcc:ao };
+        }
+      }
+    });
+    if (Object.keys(byName).length > 0) {
+      BRANCH_NAMES.forEach((n,i) => { if (!byName[i]) byName[i] = {bi:i,w1rev:0,w1occ:0,w2rev:0,w2occ:0,w3rev:0,w3occ:0,w4rev:0,w4occ:0,totalRev:0,avgOcc:0}; });
+      parsedWeeklyData = byName;
+      showPreview(Object.values(byName).sort((a,b)=>a.bi-b.bi));
+      return;
+    }
+  }
+
+  parsedWeeklyData = {};
+  extracted.forEach(e => { parsedWeeklyData[e.bi] = e; });
+  showPreview(extracted);
+}
+
+function showPreview(data) {
+  const N = n => parseFloat(n).toLocaleString('en-US');
+  let html = '';
+  data.forEach((e, idx) => {
+    const bi = e.bi !== undefined ? e.bi : idx;
+    html += `<tr style="border-bottom:1px solid rgba(30,45,71,0.5);">
+      <td style="padding:7px 12px;font-weight:700;color:var(--text);">${BRANCH_NAMES[bi]}</td>
+      <td style="padding:7px 10px;text-align:center;color:var(--accent2);">${N(e.w1rev)}</td>
+      <td style="padding:7px 10px;text-align:center;color:var(--success);">${e.w1occ}%</td>
+      <td style="padding:7px 10px;text-align:center;color:var(--accent2);">${N(e.w2rev)}</td>
+      <td style="padding:7px 10px;text-align:center;color:var(--success);">${e.w2occ}%</td>
+      <td style="padding:7px 10px;text-align:center;color:var(--accent2);">${N(e.w3rev)}</td>
+      <td style="padding:7px 10px;text-align:center;color:var(--success);">${e.w3occ}%</td>
+      <td style="padding:7px 10px;text-align:center;color:var(--accent2);">${N(e.w4rev)}</td>
+      <td style="padding:7px 10px;text-align:center;color:var(--success);">${e.w4occ}%</td>
+      <td style="padding:7px 10px;text-align:center;font-weight:700;color:var(--accent);">${N(e.totalRev)}</td>
+      <td style="padding:7px 10px;text-align:center;font-weight:700;color:var(--accent);">${e.avgOcc}%</td>
+    </tr>`;
+  });
+  document.getElementById('previewTbody').innerHTML = html;
+  document.getElementById('uploadPreview').style.display = 'block';
+  document.getElementById('confirmUploadBtn').style.display = 'inline-block';
+}
+
+function generateTemplateXLSX() {
+  const wb = XLSX.utils.book_new();
+  const MONTHS_AR = ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+  
+  const data = [];
+  data.push(['نموذج تحديث الأداء الأسبوعي – أدخل القيم في الخلايا الزرقاء فقط']);
+  data.push(['الفرع','إيراد أسبوع 1','إشغال أسبوع 1 %','إيراد أسبوع 2','إشغال أسبوع 2 %','إيراد أسبوع 3','إشغال أسبوع 3 %','إيراد أسبوع 4','إشغال أسبوع 4 %','إجمالي الإيراد','متوسط الإشغال %','الشهر']);
+
+  MONTHS_AR.forEach((month, mi) => {
+    data.push([`--- ${month} ---`,'','','','','','','','','','','']);
+    BRANCH_NAMES.forEach(branch => {
+      data.push([branch, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, month]);
+    });
+    data.push(['المجموع','','','','','','','','','','','']);
+    data.push(['']);
+  });
+
+  const ws = XLSX.utils.aoa_to_sheet(data);
+  ws['!cols'] = [
+    {wch:22},{wch:16},{wch:18},{wch:16},{wch:18},{wch:16},{wch:18},{wch:16},{wch:18},{wch:16},{wch:18},{wch:10}
+  ];
+  XLSX.utils.book_append_sheet(wb, ws, 'الأداء الأسبوعي');
+  XLSX.writeFile(wb, 'نموذج_الأداء_الأسبوعي.xlsx');
+}
+
+
+/* ===================== EXCEL UPLOAD ===================== */
+let pendingUploadData = null; // will hold parsed data before applying
+
+function resetUploadModal(){
+  document.getElementById('uploadPreview').style.display='none';
+  document.getElementById('confirmUploadBtn').style.display='none';
+  document.getElementById('xlsxFile').value='';
+  document.getElementById('previewTbody').innerHTML='';
+  pendingUploadData=null;
+  const dz=document.getElementById('dropZone');
+  if(dz){dz.style.borderColor='var(--border)';dz.style.background='var(--surface2)';}
+}
+
+function handleDrop(event){
+  event.preventDefault();
+  event.currentTarget.style.borderColor='var(--border)';
+  const file=event.dataTransfer.files[0];
+  if(file && file.name.endsWith('.xlsx')) processExcelFile(file);
+  else showToast('⚠ يرجى رفع ملف .xlsx فقط');
+}
+
+function handleFileSelect(event){
+  const file = event.target.files[0];
+  if(file) processExcelFile(file);
+}
+
+function processExcelFile(file){
+  const dz=document.getElementById('dropZone');
+  if(dz){dz.style.borderColor='var(--accent)';dz.style.background='rgba(0,212,170,0.05)';}
+  
+  const reader=new FileReader();
+  reader.onload=function(e){
+    try{
+      const data=new Uint8Array(e.target.result);
+      const wb=XLSX.read(data,{type:'uint8array'});
+      
+      // Detect which sheets are month sheets
+      const MN_LIST=['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+      const parsedMonths={};
+      let totalRows=0;
+      
+      wb.SheetNames.forEach(sheetName=>{
+        const monthIdx=MN_LIST.indexOf(sheetName);
+        if(monthIdx===-1) return; // skip non-month sheets
+        
+        const ws=wb.Sheets[sheetName];
+        const rows=XLSX.utils.sheet_to_json(ws,{header:1,defval:0});
+        
+        // Row 0 = title, Row 1 = headers, Rows 2..14 = branch data (13 branches)
+        // Cols: A=branch, B=w1rev, C=w1occ, D=w2rev, E=w2occ, F=w3rev, G=w3occ, H=w4rev, I=w4occ, J=totalRev, K=avgOcc
+        const monthData=[];
+        for(let r=2; r<=14; r++){
+          const row=rows[r];
+          if(!row || !row[0]) continue; // skip empty or totals rows
+          const branchName=String(row[0]).trim();
+          const branchIdx=BR.indexOf(branchName);
+          if(branchIdx===-1) continue;
+          
+          const w1rev=parseFloat(row[1])||0;
+          const w1occ=parseFloat(row[2])||0;
+          const w2rev=parseFloat(row[3])||0;
+          const w2occ=parseFloat(row[4])||0;
+          const w3rev=parseFloat(row[5])||0;
+          const w3occ=parseFloat(row[6])||0;
+          const w4rev=parseFloat(row[7])||0;
+          const w4occ=parseFloat(row[8])||0;
+          const totalRev=w1rev+w2rev+w3rev+w4rev;
+          const avgOcc=(w1occ+w2occ+w3occ+w4occ)/4;
+          
+          monthData.push({
+            branchIdx, branchName,
+            w1rev, w1occ, w2rev, w2occ, w3rev, w3occ, w4rev, w4occ,
+            totalRev, avgOcc
+          });
+          totalRows++;
+        }
+        
+        if(monthData.length>0){
+          parsedMonths[monthIdx+1]=monthData; // month is 1-indexed
+        }
+      });
+      
+      if(Object.keys(parsedMonths).length===0){
+        showToast('⚠ لم يتم العثور على بيانات صالحة في الملف');
+        if(dz){dz.style.borderColor='var(--danger)';dz.style.background='rgba(239,68,68,0.05)';}
+        return;
+      }
+      
+      pendingUploadData=parsedMonths;
+      renderUploadPreview(parsedMonths);
+      document.getElementById('uploadPreview').style.display='block';
+      document.getElementById('confirmUploadBtn').style.display='inline-flex';
+      showToast(`✅ تم قراءة ${totalRows} صف من بيانات الأداء`);
+      
+    } catch(err){
+      console.error(err);
+      showToast('❌ خطأ في قراءة الملف: '+err.message);
+      if(dz){dz.style.borderColor='var(--danger)';dz.style.background='rgba(239,68,68,0.05)';}
+    }
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+function renderUploadPreview(parsedMonths){
+  const MN_LIST=['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+  let html='';
+  Object.keys(parsedMonths).sort((a,b)=>a-b).forEach(monthKey=>{
+    const monthData=parsedMonths[monthKey];
+    const monthName=MN_LIST[parseInt(monthKey)-1];
+    
+    // Month header row
+    html+=`<tr style="background:rgba(0,212,170,0.12);">
+      <td colspan="11" style="padding:8px 12px;font-weight:700;color:var(--accent);text-align:right;">📅 ${monthName}</td>
+    </tr>`;
+    
+    monthData.forEach(row=>{
+      const gc=row.totalRev>0?'var(--success)':'var(--muted)';
+      html+=`<tr style="border-bottom:1px solid rgba(30,45,71,0.5);">
+        <td style="padding:7px 12px;font-weight:700;text-align:right;">${row.branchName}</td>
+        <td style="padding:7px 8px;text-align:center;">${row.w1rev.toLocaleString('en-US')}</td>
+        <td style="padding:7px 8px;text-align:center;color:var(--gold);">${row.w1occ.toFixed(1)}%</td>
+        <td style="padding:7px 8px;text-align:center;">${row.w2rev.toLocaleString('en-US')}</td>
+        <td style="padding:7px 8px;text-align:center;color:var(--gold);">${row.w2occ.toFixed(1)}%</td>
+        <td style="padding:7px 8px;text-align:center;">${row.w3rev.toLocaleString('en-US')}</td>
+        <td style="padding:7px 8px;text-align:center;color:var(--gold);">${row.w3occ.toFixed(1)}%</td>
+        <td style="padding:7px 8px;text-align:center;">${row.w4rev.toLocaleString('en-US')}</td>
+        <td style="padding:7px 8px;text-align:center;color:var(--gold);">${row.w4occ.toFixed(1)}%</td>
+        <td style="padding:7px 8px;text-align:center;font-weight:700;color:${gc};">${row.totalRev.toLocaleString('en-US')}</td>
+        <td style="padding:7px 8px;text-align:center;font-weight:700;color:var(--accent);">${row.avgOcc.toFixed(1)}%</td>
+      </tr>`;
+    });
+  });
+  document.getElementById('previewTbody').innerHTML=html;
+}
+
+function confirmUpload(){
+  if(!pendingUploadData){showToast('⚠ لا توجد بيانات للتطبيق');return;}
+  
+  Object.keys(pendingUploadData).forEach(monthKey=>{
+    const monthData=pendingUploadData[monthKey];
+    const m=parseInt(monthKey);
+    
+    monthData.forEach(row=>{
+      // Store both total rev/occ AND weekly breakdown
+      if(!perf[row.branchIdx]) perf[row.branchIdx]={};
+      perf[row.branchIdx][m]={
+        rev: row.totalRev,
+        occ: Math.round(row.avgOcc * 10) / 10,
+        weekly: [
+          {rev:row.w1rev, occ:row.w1occ},
+          {rev:row.w2rev, occ:row.w2occ},
+          {rev:row.w3rev, occ:row.w3occ},
+          {rev:row.w4rev, occ:row.w4occ},
+        ]
+      };
+    });
+  });
+  
+  closeModals();
+  showToast(`✅ تم تطبيق بيانات ${Object.keys(pendingUploadData).length} شهر على الداشبورد`);
+  pendingUploadData=null;
+  renderAll();
+}
+
+function downloadTemplate(){
+  // The template is a static file - provide a direct download
+  const link = document.createElement('a');
+  link.href = 'weekly_performance_template.xlsx';
+  link.download = 'نموذج_الاداء_الاسبوعي.xlsx';
+  link.click();
+}
+
+
+/* ===================== AUTH SYSTEM ===================== */
+const AUTH_KEY = 'dash_users';
+const SESSION_KEY = 'dash_session';
+const SECURITY_CODE = 'RESET2024'; // Security code for password reset
+
+// Hash function (simple, client-side only)
+function hashPass(pass) {
+  let h = 0;
+  for (let i = 0; i < pass.length; i++) {
+    h = Math.imul(31, h) + pass.charCodeAt(i) | 0;
+  }
+  return h.toString(36) + pass.length.toString(36) + pass.charCodeAt(0).toString(36);
+}
+
+function getUsers() {
+  try {
+    return JSON.parse(localStorage.getItem(AUTH_KEY) || '[]');
+  } catch { return []; }
+}
+
+function saveUsers(users) {
+  localStorage.setItem(AUTH_KEY, JSON.stringify(users));
+}
+
+function getSession() {
+  try {
+    return JSON.parse(sessionStorage.getItem(SESSION_KEY) || 'null');
+  } catch { return null; }
+}
+
+function initAuth() {
+  // ── Version-based cache reset ──────────────────────────────
+  const DATA_VERSION = 'v4'; // bump this to force reset on all browsers
+  if (localStorage.getItem('dash_data_ver') !== DATA_VERSION) {
+    localStorage.removeItem(AUTH_KEY);
+    localStorage.removeItem('dash_schedule');
+    localStorage.removeItem('dash_lastReminderShown');
+    localStorage.setItem('dash_data_ver', DATA_VERSION);
+  }
+
+  let users = getUsers();
+  // Seed default admin if no users exist
+  if (users.length === 0) {
+    users = [
+      { username: 'jehadaljamaai@gmail.com', passHash: hashPass('Jamx@1996'), role: 'admin', name: 'جهاد الجماعي' }
+    ];
+    saveUsers(users);
+  }
+
+  const session = getSession();
+  if (session) {
+    // Verify session still valid
+    const users2 = getUsers();
+    const valid = users2.find(u => u.username === session.username);
+    if (valid) {
+      loginSuccess(session);
+      return;
+    }
+  }
+  // Show login
+  document.getElementById('authOverlay').style.display = 'flex';
+}
+
+function authTab(tab) {
+  document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
+  document.querySelectorAll('.auth-tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('form' + tab.charAt(0).toUpperCase() + tab.slice(1)).classList.add('active');
+  const idx = ['login','forgot','admin'].indexOf(tab);
+  document.querySelectorAll('.auth-tab-btn')[idx].classList.add('active');
+  clearAuthMsgs();
+}
+
+function clearAuthMsgs() {
+  ['loginErr','forgotErr','forgotOk','adminErr','adminOk'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) { el.style.display = 'none'; el.textContent = ''; }
+  });
+}
+
+function showErr(id, msg) {
+  const el = document.getElementById(id);
+  el.textContent = msg;
+  el.style.display = 'block';
+}
+
+function showOk(id, msg) {
+  const el = document.getElementById(id);
+  el.textContent = msg;
+  el.style.display = 'block';
+}
+
+function togglePass(inputId, btn) {
+  const inp = document.getElementById(inputId);
+  if (inp.type === 'password') {
+    inp.type = 'text';
+    btn.textContent = '🙈';
+  } else {
+    inp.type = 'password';
+    btn.textContent = '👁';
+  }
+}
+
+function doLogin() {
+  clearAuthMsgs();
+  const email = document.getElementById('loginUser').value.trim();
+  const pass  = document.getElementById('loginPass').value;
+
+  if (!email || !pass) { showErr('loginErr', '⚠ يرجى إدخال البريد الإلكتروني وكلمة المرور'); return; }
+
+  // Try Firebase first, fallback to localStorage
+  if (window._fb) {
+    document.getElementById('loginErr').textContent = '';
+    window.firebaseLogin(email, pass);
+  } else {
+    // Fallback: localStorage auth (offline mode)
+    const users = getUsers();
+    const user  = users.find(u => u.username.toLowerCase() === email.toLowerCase() && u.passHash === hashPass(pass));
+    if (!user) {
+      showErr('loginErr', '❌ البريد الإلكتروني أو كلمة المرور غير صحيحة');
+      document.getElementById('loginPass').value = '';
+      return;
+    }
+    const session = { username: user.username, name: user.name, role: user.role };
+    sessionStorage.setItem(SESSION_KEY, JSON.stringify(session));
+    loginSuccess(session);
+  }
+}
+
+function loginSuccess(session) {
+  document.getElementById('authOverlay').classList.add('hidden');
+
+  // Update header
+  const bar = document.getElementById('userBarBtn');
+  const avatar = document.getElementById('userBarAvatar');
+  const nameEl = document.getElementById('userBarName');
+  bar.style.display = 'flex';
+  avatar.textContent = session.name.charAt(0);
+  nameEl.textContent = session.name + (session.role === 'admin' ? ' 👑' : session.role === 'editor' ? ' ✏' : ' 👁');
+
+  // Show admin tab if admin
+  if (session.role === 'admin') {
+    document.getElementById('adminTabBtn').style.display = '';
+  }
+}
+
+function showUserMenu() {
+  const session = getSession();
+  if (!session) return;
+  if (session.role === 'admin') {
+    // Go to admin panel
+    document.getElementById('authOverlay').classList.remove('hidden');
+    authTab('admin');
+    renderUsersList();
+  } else {
+    if (confirm('هل تريد تسجيل الخروج؟')) {
+      authLogout();
+    }
+  }
+}
+
+function authLogout() {
+  sessionStorage.removeItem(SESSION_KEY);
+  window._currentUser = null;
+  if (window._fb) {
+    window.firebaseLogout(); // Firebase handles redirect via onAuthStateChanged
+  } else {
+    document.getElementById('userBarBtn').style.display = 'none';
+    document.getElementById('adminTabBtn').style.display = 'none';
+    document.getElementById('authOverlay').classList.remove('hidden');
+    document.getElementById('authOverlay').style.display = 'flex';
+    document.getElementById('loginUser').value = '';
+    document.getElementById('loginPass').value = '';
+    authTab('login');
+  }
+}
+
+function doReset() {
+  clearAuthMsgs();
+  const newPass  = document.getElementById('forgotNewPass').value;
+  const confPass = document.getElementById('forgotConfPass').value;
+  const code     = document.getElementById('forgotCode').value.trim();
+
+  if (!code || !newPass || !confPass) { showErr('forgotErr', '⚠ يرجى ملء جميع الحقول'); return; }
+  if (code !== SECURITY_CODE)          { showErr('forgotErr', '❌ رمز الأمان غير صحيح'); return; }
+  if (newPass.length < 6)              { showErr('forgotErr', '⚠ كلمة المرور يجب أن تكون 6 أحرف على الأقل'); return; }
+  if (newPass !== confPass)            { showErr('forgotErr', '❌ كلمة المرور وتأكيدها غير متطابقتين'); return; }
+
+  if (window._fb && window._currentUser) {
+    // Firebase: requires current password for reauthentication
+    const currentPass = document.getElementById('forgotCode').value; // reuse code field as current pass hint
+    window.firebaseResetPassword(window._currentUser.email, document.getElementById('forgotUser').value, newPass);
+  } else {
+    // Fallback localStorage
+    const username = document.getElementById('forgotUser').value.trim();
+    if (!username) { showErr('forgotErr', '⚠ أدخل البريد الإلكتروني'); return; }
+    const users = getUsers();
+    const idx = users.findIndex(u => u.username === username);
+    if (idx === -1) { showErr('forgotErr', '❌ البريد الإلكتروني غير موجود'); return; }
+    users[idx].passHash = hashPass(newPass);
+    saveUsers(users);
+    showOk('forgotOk', '✅ تم تغيير كلمة المرور بنجاح!');
+    setTimeout(() => authTab('login'), 2500);
+  }
+}
+
+function addUser() {
+  clearAuthMsgs();
+  const fullName = document.getElementById('newName').value.trim();
+  const username = document.getElementById('newUser').value.trim();
+  const pass     = document.getElementById('newPass').value;
+  const role     = document.getElementById('newRole').value;
+
+  if (!fullName)          { showErr('adminErr', '⚠ يرجى إدخال الاسم الكامل'); return; }
+  if (!username || !pass) { showErr('adminErr', '⚠ يرجى ملء البريد الإلكتروني وكلمة المرور'); return; }
+  if (pass.length < 6)    { showErr('adminErr', '⚠ كلمة المرور يجب أن تكون 6 أحرف على الأقل'); return; }
+
+  const users = getUsers();
+  if (users.find(u => u.username === username)) {
+    showErr('adminErr', '❌ البريد الإلكتروني مستخدم مسبقاً');
+    return;
+  }
+  const roleNames = { viewer: 'مشاهد', editor: 'محرر', admin: 'مسؤول' };
+  users.push({ username, passHash: hashPass(pass), role, name: fullName });
+  saveUsers(users);
+  showOk('adminOk', `✅ تم إضافة "${fullName}" (${roleNames[role]}) بنجاح`);
+  document.getElementById('newName').value = '';
+  document.getElementById('newUser').value = '';
+  document.getElementById('newPass').value = '';
+  renderUsersList();
+}
+
+function deleteUser(username) {
+  const session = getSession();
+  if (username === session?.username) { alert('لا يمكن حذف المستخدم الحالي'); return; }
+  if (!confirm(`هل تريد حذف المستخدم "${username}"؟`)) return;
+  let users = getUsers();
+  users = users.filter(u => u.username !== username);
+  saveUsers(users);
+  renderUsersList();
+  showOk('adminOk', `✅ تم حذف المستخدم "${username}"`);
+}
+
+function renderUsersList() {
+  const users = getUsers();
+  const roleIcons = { viewer: '👁', editor: '✏', admin: '👑' };
+  const roleNames = { viewer: 'مشاهد', editor: 'محرر', admin: 'مسؤول' };
+  const session = getSession();
+  let html = '<div style="font-size:12px;color:#64748b;margin-bottom:10px;font-weight:700;">المستخدمون الحاليون:</div>';
+  users.forEach(u => {
+    const isCurrent = u.username === session?.username;
+    html += `
+    <div class="auth-user-row">
+      <div class="auth-user-info">
+        <div class="auth-user-avatar">${u.name.charAt(0)}</div>
+        <div>
+          <div class="auth-user-name">${u.name} ${isCurrent ? '(أنت)' : ''}</div>
+          <div class="auth-user-role">${roleIcons[u.role]} ${roleNames[u.role]} · @${u.username}</div>
+        </div>
+      </div>
+      ${!isCurrent ? `<button class="auth-del-btn" onclick="deleteUser('${u.username}')">حذف</button>` : ''}
+    </div>`;
+  });
+  document.getElementById('usersList').innerHTML = html;
+}
+
+// Hide Firebase setup banner when Firebase is not configured
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    const banner = document.getElementById('firebaseSetupBanner');
+    if (banner && (!window._fb || !window._fb.auth)) {
+      banner.style.display = 'flex';
+    }
+  }, 1500);
+});
+
+
+/* ═══════════════ SCHEDULE / AUTO-UPDATE SYSTEM ═══════════════ */
+const SCHED_KEY  = 'dash_schedule';
+let   autoRefreshTimer = null;
+
+function getSchedule() {
+  try { return JSON.parse(localStorage.getItem(SCHED_KEY) || '{}'); } catch { return {}; }
+}
+function saveSchedule(s) { localStorage.setItem(SCHED_KEY, JSON.stringify(s)); }
+
+function openScheduleModal() {
+  loadScheduleUI();
+  document.getElementById('scheduleModal').classList.add('active');
+}
+
+function loadScheduleUI() {
+  const s = getSchedule();
+
+  // Last update label
+  const lbl = document.getElementById('lastUpdateLabel');
+  const badge = document.getElementById('updateStatusBadge');
+  if (s.lastUpdate) {
+    const d = new Date(s.lastUpdate);
+    const diff = Math.floor((Date.now() - d) / 86400000);
+    lbl.textContent = d.toLocaleString('ar-SA');
+    if (diff === 0) {
+      badge.style.background='rgba(34,197,94,0.15)';badge.style.borderColor='rgba(34,197,94,0.3)';badge.style.color='#86efac';badge.textContent='محدَّث اليوم ✅';
+    } else if (diff <= 3) {
+      badge.style.background='rgba(245,158,11,0.15)';badge.style.borderColor='rgba(245,158,11,0.3)';badge.style.color='#fcd34d';badge.textContent=`منذ ${diff} أيام ⚠`;
+    } else {
+      badge.style.background='rgba(239,68,68,0.15)';badge.style.borderColor='rgba(239,68,68,0.3)';badge.style.color='#fca5a5';badge.textContent=`منذ ${diff} أيام ❌`;
+    }
+  } else {
+    lbl.textContent = 'لم يتم التحديث بعد';
+  }
+
+  // Refresh pills
+  document.querySelectorAll('#refreshGrid .refresh-pill').forEach(btn => {
+    btn.classList.toggle('active', parseInt(btn.dataset.val) === (s.refreshMin || 0));
+  });
+  updateRefreshStatus(s.refreshMin || 0);
+
+  // Reminder pills
+  document.querySelectorAll('#reminderGrid .refresh-pill').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.day === (s.reminderDay !== undefined ? String(s.reminderDay) : 'off'));
+  });
+
+  // Activity log
+  renderUpdateLog(s.log || []);
+}
+
+function setRefresh(minutes) {
+  const s = getSchedule();
+  s.refreshMin = minutes;
+  saveSchedule(s);
+
+  // Clear existing timer
+  if (autoRefreshTimer) { clearInterval(autoRefreshTimer); autoRefreshTimer = null; }
+
+  if (minutes > 0) {
+    autoRefreshTimer = setInterval(() => {
+      renderAll();
+      showToast(`🔄 تم تحديث العرض تلقائياً (كل ${minutes} د)`);
+    }, minutes * 60 * 1000);
+  }
+
+  // Update dot indicator
+  document.getElementById('scheduleDot').style.display = minutes > 0 ? 'block' : 'none';
+
+  // Update UI
+  document.querySelectorAll('#refreshGrid .refresh-pill').forEach(btn => {
+    btn.classList.toggle('active', parseInt(btn.dataset.val) === minutes);
+  });
+  updateRefreshStatus(minutes);
+}
+
+function updateRefreshStatus(minutes) {
+  const el = document.getElementById('refreshStatus');
+  if (!el) return;
+  el.innerHTML = minutes > 0
+    ? `التحديث التلقائي: <strong style="color:var(--accent)">كل ${minutes} دقيقة 🟢</strong>`
+    : `التحديث التلقائي: <strong style="color:var(--muted)">متوقف</strong>`;
+}
+
+function setReminder(day) {
+  const s = getSchedule();
+  s.reminderDay = day === 'off' ? 'off' : parseInt(day);
+  saveSchedule(s);
+  document.querySelectorAll('#reminderGrid .refresh-pill').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.day === day);
+  });
+  if (day !== 'off') {
+    const days = ['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
+    showToast(`🔔 سيتم التذكير برفع البيانات كل ${days[parseInt(day)]}`);
+  }
+}
+
+function markUpdatedNow() {
+  const s = getSchedule();
+  s.lastUpdate = Date.now();
+  if (!s.log) s.log = [];
+  const user = window._currentUser ? window._currentUser.name : (getSession()?.name || 'مستخدم');
+  s.log.unshift({ ts: Date.now(), user, action: 'تم تسجيل تحديث يدوي' });
+  if (s.log.length > 20) s.log = s.log.slice(0, 20);
+  saveSchedule(s);
+  loadScheduleUI();
+  showToast('✅ تم تسجيل التحديث بنجاح');
+}
+
+function logDataUpdate(month, branchCount) {
+  const s = getSchedule();
+  s.lastUpdate = Date.now();
+  if (!s.log) s.log = [];
+  const MN = ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+  const user = window._currentUser ? window._currentUser.name : (getSession()?.name || 'مستخدم');
+  s.log.unshift({ ts: Date.now(), user, action: `رُفعت بيانات ${MN[month-1]} لـ ${branchCount} فرع` });
+  if (s.log.length > 20) s.log = s.log.slice(0, 20);
+  saveSchedule(s);
+  // Update dot on schedule button
+  document.getElementById('scheduleDot').style.display = 'none';
+}
+
+function renderUpdateLog(log) {
+  const el = document.getElementById('updateLog');
+  if (!el) return;
+  if (!log.length) {
+    el.innerHTML = '<div style="padding:12px 16px;font-size:13px;color:var(--muted);text-align:center;">لا يوجد سجل حتى الآن</div>';
+    return;
+  }
+  el.innerHTML = log.map(entry => {
+    const d = new Date(entry.ts);
+    const timeStr = d.toLocaleString('ar-SA', {day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});
+    return `<div style="display:flex;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid var(--border);">
+      <div style="width:34px;height:34px;background:rgba(0,212,170,0.1);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;">📤</div>
+      <div style="flex:1;min-width:0;">
+        <div style="font-size:13px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${entry.action}</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:2px;">${entry.user} · ${timeStr}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function checkWeeklyReminder() {
+  const s = getSchedule();
+  if (s.reminderDay === 'off' || s.reminderDay === undefined) return;
+  const today = new Date().getDay();
+  const days = ['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
+  if (today === parseInt(s.reminderDay)) {
+    const lastKey = 'dash_lastReminderShown';
+    const lastShown = localStorage.getItem(lastKey);
+    const todayStr = new Date().toDateString();
+    if (lastShown !== todayStr) {
+      localStorage.setItem(lastKey, todayStr);
+      setTimeout(() => {
+        showToast(`🔔 تذكير: اليوم ${days[today]} — يرجى رفع بيانات الأداء الأسبوعي`);
+        document.getElementById('scheduleDot').style.display = 'block';
+      }, 3000);
+    }
+  }
+}
+
+// Init schedule on load
+function initSchedule() {
+  const s = getSchedule();
+  // Restore auto-refresh if it was set
+  if (s.refreshMin && s.refreshMin > 0) {
+    setRefresh(s.refreshMin);
+  }
+  checkWeeklyReminder();
+}
+
+/* INIT */
+initBdSel();
+cumUpTo = curM();
+renderAll();
+initAuth();
+</script>
+</body>
+</html>
